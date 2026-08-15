@@ -1,0 +1,95 @@
+{
+  "menu": [
+    {
+      "url": "/categorias",
+      "name": "Categorias",
+      "icon": "menu-icon icon-base bx bx-category",
+      "slug": "categorias.index"
+    },
+    {
+      "url": "/roles",
+      "name": "Roles",
+      "icon": "menu-icon icon-base bx bx-user-check",
+      "slug": "roles.index"
+    },
+    {
+      "name": "Productos",
+      "icon": "menu-icon icon-base bx bx-box",
+      "slug": "productos",
+      "submenu": [
+        {
+          "url": "/productos",
+          "name": "Lista de Productos",
+          "icon": "menu-icon icon-base bx bx-list-ul",
+          "slug": "productos.index"
+        },
+        {
+          "url": "/marcas",
+          "name": "Marcas",
+          "icon": "menu-icon icon-base bx bx-tag",
+          "slug": "marcas.index"
+        },
+        {
+          "url": "/unidades-medidas",
+          "name": "Un. Medida",
+          "icon": "menu-icon icon-base bx bx-ruler",
+          "slug": "unidades-medidas.index"
+        }
+      ]
+    },
+    {
+      "url": "/usuarios",
+      "name": "Usuarios",
+      "icon": "menu-icon icon-base bx bx-user",
+      "slug": "usuarios.index"
+    },
+    {
+      "url": "/clientes",
+      "name": "Clientes",
+      "icon": "menu-icon icon-base bx bx-group",
+      "slug": "clientes.index"
+    },
+    {
+      "menuHeader": "Ventas"
+    },
+    {
+      "url": "/ventas",
+      "name": "Ventas",
+      "icon": "menu-icon icon-base bx bx-dollar",
+      "slug": "ventas.index"
+    },
+    {
+      "url": "/reports",
+      "name": "Reportes",
+      "icon": "menu-icon icon-base bx bx-bar-chart",
+      "slug": "reports.index"
+    },
+    {
+      "menuHeader": "Almacen"
+    },
+    {
+      "name": "Sucursales",
+      "icon": "menu-icon icon-base bx bx-store",
+      "slug": "sucursales.index",
+      "url": "/sucursales"
+    },
+    {
+      "name": "Proveedores",
+      "icon": "menu-icon icon-base bx bx-box",
+      "slug": "proveedores.index",
+      "url": "/proveedores"
+    },
+    {
+      "name": "Movimientos",
+      "icon": "menu-icon icon-base bx bx-transfer",
+      "slug": "movimientos-inventario.index",
+      "url": "/movimientos-inventario"
+    },
+    {
+      "url": "/stock-almacen",
+      "icon": "menu-icon icon-base bx bx-package",
+      "name": "Estado Almacen",
+      "slug": "stock-almacen.index"
+    }
+  ]
+}
