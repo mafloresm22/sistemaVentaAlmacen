@@ -3,8 +3,8 @@
     <div class="modal-content">
       <form action="{{ route('categorias.store') }}" method="POST">
         @csrf
-        <div class="modal-header">
-          <h5 class="modal-title"><i class="bx bx-category me-2 text-primary"></i>Nueva Categoría</h5>
+        <div class="modal-header bg-primary">
+          <h5 class="modal-title text-white"><i class="bx bx-category me-2"></i>Nueva Categoría</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">

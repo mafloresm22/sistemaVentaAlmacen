@@ -7,33 +7,27 @@ use Illuminate\Http\Request;
 
 class MarcasController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   */
   public function index()
   {
-    //
+    $marcas = Marcas::orderBy('idMarcas', 'asc')->paginate(9);
+    return view('marcas.index', compact('marcas'));
   }
-
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
   public function store(Request $request)
   {
-    //
-  }
+    $validated = $request->validate([
+        'nameMarcas' => 'required|string|max:150|unique:marcas,nameMarcas',
+    ], [
+        'nameMarcas.required' => 'El nombre de la marca es obligatorio.',
+        'nameMarcas.unique'   => 'Esta marca ya se encuentra registrada.',
+        'nameMarcas.max'      => 'El nombre no puede tener más de 150 caracteres.',
+    ]);
 
-  /**
-   * Display the specified resource.
-   */
+    Marcas::create([
+        'nameMarcas' => $request->nameMarcas,
+    ]);
+
+    return redirect()->route('marcas.index')->with('success', 'Marca creada correctamente.');
+  }
   public function show(Marcas $marcas)
   {
     //

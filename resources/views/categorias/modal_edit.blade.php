@@ -4,8 +4,8 @@
       <form id="formEditar" action="" method="POST">
         @csrf
         @method('PUT')
-        <div class="modal-header">
-          <h5 class="modal-title"><i class="bx bx-edit me-2 text-warning"></i>Editar Categoría</h5>
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title text-white"><i class="bx bx-edit me-2"></i>Editar Categoría</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
