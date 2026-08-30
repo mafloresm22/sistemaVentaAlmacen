@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header bg-primary">
-        <h5 class="modal-title fw-bold text-white"><i class="bx bx-plus me-2"></i>Nueva Unidad de Medida</h5>
+        <h5 class="modal-title fw-bold text-white" style="transform: translateY(-8px);">Nueva Unidad de Medida</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="{{ route('unidades-medidas.store') }}" method="POST">

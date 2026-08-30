@@ -4,7 +4,7 @@
       <form action="{{ route('categorias.store') }}" method="POST">
         @csrf
         <div class="modal-header bg-primary">
-          <h5 class="modal-title text-white"><i class="bx bx-category me-2"></i>Nueva Categoría</h5>
+          <h5 class="modal-title text-white" style="transform: translateY(-8px);">Nueva Categoría</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -34,9 +34,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">
-            <i class="bx bx-save me-1"></i>Guardar
-          </button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
       </form>
     </div>

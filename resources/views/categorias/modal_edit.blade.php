@@ -5,8 +5,8 @@
         @csrf
         @method('PUT')
         <div class="modal-header bg-warning">
-          <h5 class="modal-title text-white"><i class="bx bx-edit me-2"></i>Editar Categoría</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <h5 class="modal-title text-white" style="transform: translateY(-8px);">Editar Categoría</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
@@ -26,9 +26,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-warning">
-            <i class="bx bx-save me-1"></i>Actualizar
-          </button>
+          <button type="submit" class="btn btn-warning">Actualizar</button>
         </div>
       </form>
     </div>

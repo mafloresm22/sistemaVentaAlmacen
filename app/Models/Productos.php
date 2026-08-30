@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Observers\ProductosObserver;
 
+#[ObservedBy(ProductosObserver::class)]
 class Productos extends Model
 {
     protected $table = 'productos';
@@ -39,5 +42,10 @@ class Productos extends Model
     public function imagenes()
     {
         return $this->hasMany(Imagenes::class, 'productosid', 'idProductos');
+    }
+
+    public function stockAlmacen()
+    {
+        return $this->hasMany(StockAlmacen::class, 'productosid', 'idProductos');
     }
 }

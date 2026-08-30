@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Productos;
+use App\Models\Categorias;
+use App\Models\Marcas;
+use App\Models\UnidadesMedidas;
 use Illuminate\Http\Request;
 
 class ProductosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $categorias = Categorias::all();
+        $marcas = Marcas::all();
+        $unidadesMedida = UnidadesMedidas::all();
+        $productos = Productos::with(['categoria', 'marca', 'unidadMedida', 'imagenes', 'stockAlmacen'])
+            ->orderBy('nombreProductos')
+            ->get();
+
+        return view('productos.index', compact('productos', 'categorias', 'marcas', 'unidadesMedida'));
     }
 
     /**
