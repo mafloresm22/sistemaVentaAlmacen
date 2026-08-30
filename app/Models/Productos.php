@@ -11,6 +11,7 @@ class Productos extends Model
     protected $primaryKey = 'idProductos';
 
     protected $fillable = [
+        'codigoProducto',
         'nombreProductos',
         'descripcionProductos',
         'precioProductos',
@@ -20,27 +21,23 @@ class Productos extends Model
         'unidadesmedidasid',
     ];
 
-    /**
-     * Relación: un producto pertenece a una categoría.
-     */
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(Categorias::class, 'categoriasid', 'idCategorias');
     }
 
-    /**
-     * Relación: un producto pertenece a una marca.
-     */
     public function marca(): BelongsTo
     {
         return $this->belongsTo(Marcas::class, 'marcasid', 'idMarcas');
     }
 
-    /**
-     * Relación: un producto tiene una unidad de medida.
-     */
     public function unidadMedida(): BelongsTo
     {
         return $this->belongsTo(UnidadesMedidas::class, 'unidadesmedidasid', 'idUnidadesMedidas');
+    }
+
+    public function imagenes()
+    {
+        return $this->hasMany(Imagenes::class, 'productosid', 'idProductos');
     }
 }

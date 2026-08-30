@@ -9,9 +9,10 @@ class MarcasController extends Controller
 {
   public function index()
   {
-    $marcas = Marcas::orderBy('idMarcas', 'asc')->paginate(9);
+    $marcas = Marcas::orderBy('idMarcas', 'asc')->paginate(16);
     return view('marcas.index', compact('marcas'));
   }
+  
   public function store(Request $request)
   {
     $validated = $request->validate([
@@ -28,32 +29,40 @@ class MarcasController extends Controller
 
     return redirect()->route('marcas.index')->with('success', 'Marca creada correctamente.');
   }
-  public function show(Marcas $marcas)
-  {
-    //
+
+  public function buscar(Request $request){
+    $marcas = Marcas::orderBy('nameMarcas', 'asc')
+    ->where('nameMarcas', 'like', '%'.$request->buscar.'%')
+    ->paginate(16);
+    return view('marcas.index', compact('marcas'));
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(Marcas $marcas)
+  public function update(Request $request, string $idMarcas)
   {
-    //
+    $validated = $request->validate([
+        'nameMarcas' => 'required|string|max:150|unique:marcas,nameMarcas,' . $idMarcas . ',idMarcas',
+    ], [
+        'nameMarcas.required' => 'El nombre de la marca es obligatorio.',
+        'nameMarcas.unique'   => 'Esta marca ya se encuentra registrada.',
+        'nameMarcas.max'      => 'El nombre no puede tener más de 150 caracteres.',
+    ]);
+
+    $marca = Marcas::findOrFail($idMarcas);
+    $marca->update([
+        'nameMarcas' => $request->nameMarcas,
+    ]);
+
+    return redirect()->route('marcas.index')->with('success', 'Marca actualizada correctamente.');
   }
 
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, Marcas $marcas)
+  public function destroy(string $idMarcas)
   {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(Marcas $marcas)
-  {
-    //
+    try {
+        $marcas = Marcas::findOrFail($idMarcas);
+        $marcas->delete();
+        return redirect()->route('marcas.index')->with('success', 'Marca eliminada correctamente.');
+    } catch (\Exception $e) {
+        return redirect()->route('marcas.index')->with('error', 'No se puede eliminar la marca porque está siendo utilizada en el sistema.');
+    }
   }
 }

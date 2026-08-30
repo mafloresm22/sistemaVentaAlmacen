@@ -1,4 +1,4 @@
-@extends('layouts/contentNavbarLayout')
+@extends('layouts.contentNavbarLayout')
 
 @section('title', 'Categorías')
 
@@ -39,7 +39,8 @@
               </td>
               <td>{{ $categoria->descripcionCategorias }}</td>
               <td class="text-center">
-                <button type="button" class="btn btn-sm btn-icon btn-warning me-1" title="Editar" onclick="abrirModalEditar(
+                <button type="button" class="btn btn-sm btn-icon btn-warning me-1" title="Editar"
+                  onclick="abrirModalEditar(
                                                         {{ $categoria->idCategorias }},
                                                         '{{ addslashes($categoria->nombreCategorias) }}',
                                                         '{{ addslashes($categoria->descripcionCategorias) }}'
@@ -71,26 +72,33 @@
 
 @section('page-script')
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
       $('#tablaCategorias').DataTable({
         responsive: true,
         autoWidth: false,
         language: {
           url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
         },
-        columnDefs: [
-          { orderable: false, targets: 3 }, // Deshabilitar ordenación en la columna Acciones
+        columnDefs: [{
+            orderable: false,
+            targets: 3
+          }, // Deshabilitar ordenación en la columna Acciones
         ],
-        order: [[0, 'asc']],
+        order: [
+          [0, 'asc']
+        ],
         pageLength: 10,
-        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+        lengthMenu: [
+          [5, 10, 25, 50, -1],
+          [5, 10, 25, 50, "Todos"]
+        ],
       });
 
       @if ($errors->any())
         var modal = new bootstrap.Modal(document.getElementById('modalCrearCategoria'));
         modal.show();
       @endif
-        });
+    });
 
     // Modal Editar
     function abrirModalEditar(id, nombre, descripcion) {
@@ -101,7 +109,6 @@
       new bootstrap.Modal(document.getElementById('modalEditarCategoria')).show();
     }
 
-    // Confirmación de eliminación con SweetAlert2
     function confirmarEliminar(id, nombre) {
       Swal.fire({
         title: '¿Eliminar categoría?',

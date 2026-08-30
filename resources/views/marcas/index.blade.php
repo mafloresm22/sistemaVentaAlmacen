@@ -15,6 +15,24 @@
     </button>
   </div>
 
+  {{-- Buscador --}}
+  <div class="card mb-4">
+    <div class="card-body">
+      <form action="{{ route('marcas.buscar') }}" method="GET" class="d-flex gap-2">
+        <input type="text" name="buscar" class="form-control" placeholder="Buscar marcas..."
+          value="{{ request('buscar') }}">
+        <button type="submit" class="btn btn-primary">
+          <i class="bx bx-search me-1"></i>Buscar
+        </button>
+        @if (request('buscar'))
+          <a href="{{ route('marcas.index') }}" class="btn btn-danger">
+            <i class="bx bx-x me-1"></i>Limpiar
+          </a>
+        @endif
+      </form>
+    </div>
+  </div>
+
   @php
     $bgStyles = [
         ['bg' => 'bg-label-primary', 'border' => 'border-primary', 'btn' => 'btn-primary'],
@@ -52,7 +70,7 @@
             {{-- Botón de Acción Editar y Eliminar --}}
             <div class="d-flex align-items-center gap-1">
               <button type="button" class="btn btn-icon btn-sm btn-white text-primary shadow-xs" title="Editar marca"
-                data-bs-toggle="modal" data-bs-target="#modalEditarMarca{{ $marca->idMarcas }}">
+                onclick="abrirModalEditar({{ $marca->idMarcas }}, '{{ addslashes($marca->nameMarcas) }}')">
                 <i class="bx bx-edit fs-6"></i>
               </button>
               <form id="form-delete-{{ $marca->idMarcas }}" action="{{ route('marcas.destroy', $marca->idMarcas) }}"
@@ -99,6 +117,19 @@
         modal.show();
       @endif
     });
+
+    // Modal Editar
+    function abrirModalEditar(id, nombre) {
+      document.getElementById('editNombre').value = nombre;
+      document.getElementById('formEditarMarcas').action = '/marcas/' + id;
+
+      var modalEl = document.getElementById('modalEditarMarcas');
+      var modal = bootstrap.Modal.getInstance(modalEl);
+      if (!modal) {
+        modal = new bootstrap.Modal(modalEl);
+      }
+      modal.show();
+    }
 
     // Confirmación de eliminación con SweetAlert2
     function confirmarEliminar(id, nombre) {

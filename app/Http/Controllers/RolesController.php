@@ -27,8 +27,14 @@ class RolesController extends Controller
     return redirect()->route('roles.index')->with('success', 'Rol creado exitosamente.');
   }
 
-  public function destroy(Roles $roles)
+  public function destroy($idRoles)
   {
-    //
+    try {
+      $rol = Roles::findOrFail($idRoles);
+      $rol->delete();
+      return redirect()->route('roles.index')->with('success', 'Rol eliminado exitosamente.');
+    } catch (\Exception $e) {
+      return redirect()->route('roles.index')->with('error', 'El rol no se puede eliminar porque tiene usuarios asignados.');
+    }
   }
 }

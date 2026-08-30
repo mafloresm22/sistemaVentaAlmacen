@@ -17,34 +17,40 @@
 
   {{-- Listado en Cards --}}
   <div class="row g-4 mb-4">
-    @forelse ($roles as $rol)
+    @php
+      $cardColors = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger'];
+    @endphp
+    @forelse ($roles as $index => $rol)
+      @php
+        $colorClass = $cardColors[$index % count($cardColors)];
+      @endphp
       <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm border-0">
+        <div class="card h-100 shadow-sm border-0 {{ $colorClass }} transition-all hover-scale">
           <div class="card-body d-flex flex-column justify-content-between">
 
             <div class="d-flex align-items-center justify-content-between mb-3">
               <div class="avatar shrink-0 me-3">
-                <span class="avatar-initial rounded bg-label-primary">
+                <span class="avatar-initial rounded bg-white text-dark shadow-sm">
                   <i class="bx bx-shield-quarter fs-3"></i>
                 </span>
               </div>
             </div>
 
             <div class="mb-3">
-              <h5 class="card-title fw-bold text-primary mb-1">
+              <h5 class="card-title fw-bold mb-1 text-dark">
                 {{ $rol->nameRoles }}
               </h5>
-              <small class="text-muted">Rol registrado en el sistema</small>
             </div>
 
-            <div class="pt-3 border-top d-flex justify-content-between align-items-center">
-              <form id="form-delete-{{ $rol->idRoles }}" action="{{ route('roles.destroy', $rol->idRoles) }}" method="POST"
-                class="w-100">
+            <div class="pt-3 border-top border-white-50 d-flex justify-content-between align-items-center mt-auto">
+              <form id="form-delete-{{ $rol->idRoles }}" action="{{ route('roles.destroy', $rol->idRoles) }}"
+                method="POST" class="w-100">
                 @csrf
                 @method('DELETE')
-                <button type="button" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center"
+                <button type="button"
+                  class="btn btn-danger w-100 d-flex align-items-center justify-content-center shadow-sm rounded-pill transition-all"
                   onclick="confirmarEliminar({{ $rol->idRoles }}, '{{ addslashes($rol->nameRoles) }}')">
-                  <i class="bx bx-trash me-1"></i> Eliminar Rol
+                  <i class="bx bx-trash me-2"></i> Eliminar Rol
                 </button>
               </form>
             </div>
@@ -74,15 +80,13 @@
 
 @section('page-script')
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Reabrir modal de creación si existen errores de validación
+    document.addEventListener('DOMContentLoaded', function() {
       @if ($errors->any())
         var modal = new bootstrap.Modal(document.getElementById('modalCrearRol'));
         modal.show();
       @endif
-          });
+    });
 
-    // Confirmación de eliminación con SweetAlert2
     function confirmarEliminar(id, nombre) {
       Swal.fire({
         title: '¿Eliminar rol?',
@@ -92,12 +96,7 @@
         confirmButtonColor: '#d33',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar',
-        customClass: {
-          confirmButton: 'btn btn-danger me-3',
-          cancelButton: 'btn btn-label-secondary'
-        },
-        buttonsStyling: false
+        cancelButtonText: 'Cancelar'
       }).then((result) => {
         if (result.isConfirmed) {
           document.getElementById('form-delete-' + id).submit();

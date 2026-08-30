@@ -16,9 +16,11 @@ CREATE TABLE IF NOT EXISTS "Marcas" (
 	PRIMARY KEY ("idMarcas")
 );
 CREATE TABLE IF NOT EXISTS "UnidadesMedidas" (
-	"idUnidadesMedidas" serial NOT NULL UNIQUE,
-	"nameUnidadesMedidas" varchar(100) NOT NULL UNIQUE,
-	PRIMARY KEY ("idUnidadesMedidas")
+  "idUnidadesMedidas" serial NOT NULL,
+  "nameUnidadesMedidas" varchar(100) NOT NULL UNIQUE,
+  "simboloUnMedidas" varchar(10) NOT NULL UNIQUE,
+  "permiteDecimalesUnMedidas" boolean NOT NULL DEFAULT false,
+  PRIMARY KEY ("idUnidadesMedidas")
 );
 CREATE TABLE IF NOT EXISTS "Categorias" (
 	"idCategorias" serial NOT NULL UNIQUE,
@@ -29,6 +31,7 @@ CREATE TABLE IF NOT EXISTS "Categorias" (
 );
 CREATE TABLE IF NOT EXISTS "Productos" (
 	"idProductos" serial NOT NULL UNIQUE,
+	"codigoProducto" varchar(64) NULL UNIQUE,
 	"nombreProductos" varchar(150) NOT NULL,
 	"descripcionProductos" text,
 	"precioProductos" numeric(10,2) NOT NULL,
@@ -125,4 +128,6 @@ ALTER TABLE "StockAlmacen" ADD CONSTRAINT "StockAlmacen_fk3" FOREIGN KEY ("sucur
 ALTER TABLE "MovimientosInventario" ADD CONSTRAINT "MovimientosInventario_fk5" FOREIGN KEY ("productosid") REFERENCES "Productos"("idProductos");
 ALTER TABLE "MovimientosInventario" ADD CONSTRAINT "MovimientosInventario_fk6" FOREIGN KEY ("sucursalesid") REFERENCES "Sucursales"("idSucursales");
 ALTER TABLE "MovimientosInventario" ADD CONSTRAINT "MovimientosInventario_fk7" FOREIGN KEY ("userid") REFERENCES "Users"("id");
+ALTER TABLE "Productos" ADD CONSTRAINT "Productos_fk5" FOREIGN KEY ("marcasid") REFERENCES "Marcas"("idMarcas");
+ALTER TABLE "Productos" ADD CONSTRAINT "Productos_fk6" FOREIGN KEY ("unidadesmedidasid") REFERENCES "UnidadesMedidas"("idUnidadesMedidas");
 ALTER TABLE "MovimientosInventario" ADD CONSTRAINT "MovimientosInventario_fk8" FOREIGN KEY ("proveedoresid") REFERENCES "Proveedores"("idProveedores");

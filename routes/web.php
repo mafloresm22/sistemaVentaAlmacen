@@ -115,6 +115,7 @@ Route::middleware(['auth'])->group(function () {
   // Módulo de Marcas
   Route::get('/marcas', [MarcasController::class, 'index'])->name('marcas.index');
   Route::post('/marcas', [MarcasController::class, 'store'])->name('marcas.store');
+  Route::get('/marcas/buscar', [MarcasController::class,'buscar'])->name('marcas.buscar');
   Route::put('/marcas/{idMarcas}', [MarcasController::class, 'update'])->name('marcas.update');
   Route::delete('/marcas/{idMarcas}', [MarcasController::class, 'destroy'])->name('marcas.destroy');
 

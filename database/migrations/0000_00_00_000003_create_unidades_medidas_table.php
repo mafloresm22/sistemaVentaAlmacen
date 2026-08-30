@@ -13,6 +13,8 @@ return new class extends Migration {
         Schema::create('unidades_medidas', function (Blueprint $table) {
             $table->id('idUnidadesMedidas');
             $table->string('nameUnidadesMedidas', 100)->unique()->nullable(false);
+            $table->string('simboloUnMedidas', 10)->unique()->nullable(false);
+            $table->boolean('permiteDecimalesUnMedidas')->default(false);
             $table->timestamps();
         });
     }

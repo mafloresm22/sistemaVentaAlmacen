@@ -7,59 +7,67 @@ use Illuminate\Http\Request;
 
 class UnidadesMedidasController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   */
   public function index()
   {
-    //
+    $unidades_medidas = UnidadesMedidas::orderBy('idUnidadesMedidas', 'asc')->get();
+    return view('unidades_medidas.index', compact('unidades_medidas'));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
   public function store(Request $request)
   {
-    //
+    $validated = $request->validate([
+        'nameUnidadesMedidas' => 'required|string|max:100|unique:unidades_medidas,nameUnidadesMedidas',
+        'simboloUnMedidas'    => 'required|string|max:10|unique:unidades_medidas,simboloUnMedidas',
+    ], [
+        'nameUnidadesMedidas.required' => 'El nombre es obligatorio.',
+        'nameUnidadesMedidas.unique'   => 'Esta unidad de medida ya se encuentra registrada.',
+        'nameUnidadesMedidas.max'      => 'El nombre no puede tener más de 100 caracteres.',
+        'simboloUnMedidas.required'    => 'El símbolo es obligatorio.',
+        'simboloUnMedidas.unique'      => 'Este símbolo ya se encuentra registrado.',
+        'simboloUnMedidas.max'         => 'El símbolo no puede tener más de 10 caracteres.',
+    ]);
+
+    UnidadesMedidas::create([
+        'nameUnidadesMedidas'       => $request->nameUnidadesMedidas,
+        'simboloUnMedidas'          => $request->simboloUnMedidas,
+        'permiteDecimalesUnMedidas' => $request->has('permiteDecimalesUnMedidas'),
+    ]);
+
+    return redirect()->route('unidades-medidas.index')->with('success', 'Unidad de medida creada correctamente.');
   }
 
-  /**
-   * Display the specified resource.
-   */
-  public function show(UnidadesMedidas $unidadesMedidas)
+  public function update(Request $request, string $idUnidadesMedidas)
   {
-    //
+    $validated = $request->validate([
+        'nameUnidadesMedidas' => 'required|string|max:100|unique:unidades_medidas,nameUnidadesMedidas,' . $idUnidadesMedidas . ',idUnidadesMedidas',
+        'simboloUnMedidas'    => 'required|string|max:10|unique:unidades_medidas,simboloUnMedidas,' . $idUnidadesMedidas . ',idUnidadesMedidas',
+    ], [
+        'nameUnidadesMedidas.required' => 'El nombre es obligatorio.',
+        'nameUnidadesMedidas.unique'   => 'Esta unidad de medida ya se encuentra registrada.',
+        'nameUnidadesMedidas.max'      => 'El nombre no puede tener más de 100 caracteres.',
+        'simboloUnMedidas.required'    => 'El símbolo es obligatorio.',
+        'simboloUnMedidas.unique'      => 'Este símbolo ya se encuentra registrado.',
+        'simboloUnMedidas.max'         => 'El símbolo no puede tener más de 10 caracteres.',
+    ]);
+
+    $unidad = UnidadesMedidas::findOrFail($idUnidadesMedidas);
+    $unidad->update([
+        'nameUnidadesMedidas'       => $request->nameUnidadesMedidas,
+        'simboloUnMedidas'          => $request->simboloUnMedidas,
+        'permiteDecimalesUnMedidas' => $request->has('permiteDecimalesUnMedidas'),
+    ]);
+
+    return redirect()->route('unidades-medidas.index')->with('success', 'Unidad de medida actualizada correctamente.');
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(UnidadesMedidas $unidadesMedidas)
+  public function destroy(string $idUnidadesMedidas)
   {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, UnidadesMedidas $unidadesMedidas)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(UnidadesMedidas $unidadesMedidas)
-  {
-    //
+    try {
+        $unidad = UnidadesMedidas::findOrFail($idUnidadesMedidas);
+        $unidad->delete();
+        return redirect()->route('unidades-medidas.index')->with('success', 'Unidad de medida eliminada correctamente.');
+    } catch (\Exception $e) {
+        return redirect()->route('unidades-medidas.index')->with('error', 'No se puede eliminar la unidad de medida porque está siendo utilizada en el sistema.');
+    }
   }
 }
