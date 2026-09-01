@@ -3,7 +3,7 @@
 @section('title', 'Productos')
 
 @section('vendor-style')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
 
 
@@ -25,71 +25,54 @@
     </div>
   </div>
 
-  <div class="card mb-6">
-    <div class="card-widget-separator-wrapper">
-      <div class="card-body card-widget-separator">
-        <div class="row gy-4 gy-sm-1">
-          <div class="col-sm-6 col-lg-3">
-            <div class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-4 pb-sm-0">
-              <div>
-                <p class="mb-1">Productos con Stock Bajo</p>
-                <h4 class="mb-1">
-                  {{ $productos->where('stockProductos', '<=', 5)->count() }}
-                </h4>
-              </div>
-              <span class="avatar me-sm-6">
-                <span class="avatar-initial rounded w-px-44 h-px-44">
-                  <i class="icon-base bx bx-store-alt icon-lg text-heading"></i>
-                </span>
-              </span>
-            </div>
-            <hr class="d-none d-sm-block d-lg-none me-6">
+  <div class="row g-4 mb-4">
+    {{-- Total de Productos --}}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <p class="mb-1 text-muted small">Total de Productos</p>
+            <h4 class="mb-0 fw-bold">{{ $productos->count() }}</h4>
           </div>
-          <div class="col-sm-6 col-lg-3">
-            <div class="d-flex justify-content-between align-items-start card-widget-2 border-end pb-4 pb-sm-0">
-              <div>
-                <p class="mb-1">Productos sin Stock</p>
-                <h4 class="mb-1">
-                  {{ $productos->where('stockProductos', 0)->count() }}
-                </h4>
-              </div>
-              <span class="avatar p-2 me-lg-6">
-                <span class="avatar-initial rounded w-px-44 h-px-44">
-                  <i class="icon-base bx bx-laptop icon-lg text-heading"></i>
-                </span>
-              </span>
-            </div>
-            <hr class="d-none d-sm-block d-lg-none">
+          <span class="avatar p-2">
+            <span class="avatar-initial rounded bg-label-primary w-px-44 h-px-44">
+              <i class="icon-base bx bx-package icon-lg"></i>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {{-- Productos Inactivos --}}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <p class="mb-1 text-muted small">Productos Inactivos</p>
+            <h4 class="mb-0 fw-bold">{{ $productos->where('estadoProductos', '!=', 'Activo')->count() }}</h4>
           </div>
-          <div class="col-sm-6 col-lg-3">
-            <div class="d-flex justify-content-between align-items-start border-end pb-4 pb-sm-0 card-widget-3">
-              <div>
-                <p class="mb-1">Total de Productos</p>
-                <h4 class="mb-1">
-                  {{ $productos->where('estadoProductos', 'inactivo')->count() }}
-                </h4>
-              </div>
-              <span class="avatar p-2 me-sm-6">
-                <span class="avatar-initial rounded w-px-44 h-px-44">
-                  <i class="icon-base bx bx-gift icon-lg text-heading"></i>
-                </span>
-              </span>
-            </div>
+          <span class="avatar p-2">
+            <span class="avatar-initial rounded bg-label-danger w-px-44 h-px-44">
+              <i class="icon-base bx bx-x-circle icon-lg"></i>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {{-- Total Categorías --}}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <p class="mb-1 text-muted small">Categorías</p>
+            <h4 class="mb-0 fw-bold">{{ $categorias->count() }}</h4>
           </div>
-          <div class="col-sm-6 col-lg-3">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <p class="mb-1">Por categoría</p>
-                <h4 class="mb-1">{{ $productos->count() }}</h4>
-                <p class="mb-0"><span class="me-2">Total en catálogo</span></p>
-              </div>
-              <span class="avatar p-2">
-                <span class="avatar-initial rounded w-px-44 h-px-44">
-                  <i class="icon-base bx bx-wallet icon-lg text-heading"></i>
-                </span>
-              </span>
-            </div>
-          </div>
+          <span class="avatar p-2">
+            <span class="avatar-initial rounded bg-label-info w-px-44 h-px-44">
+              <i class="icon-base bx bx-category icon-lg"></i>
+            </span>
+          </span>
         </div>
       </div>
     </div>
@@ -118,9 +101,8 @@
               <td>{{ $producto->codigoProducto }}</td>
               <td>
                 @if ($producto->imagenes->isNotEmpty())
-                  <img src="{{ asset('storage/' . $producto->imagenes->first()->rutaImagenes) }}"
-                    alt="{{ $producto->nombreProductos }}" width="50" height="50" class="rounded"
-                    style="object-fit:cover;">
+                  <img src="{{ $producto->imagenes->first()->url }}" alt="{{ $producto->nombreProductos }}" width="50"
+                    height="50" class="rounded" style="object-fit:cover;">
                 @else
                   <span class="badge bg-label-secondary">Sin imagen</span>
                 @endif
@@ -128,13 +110,16 @@
               <td>{{ $producto->nombreProductos }}</td>
               <td>S/ {{ number_format($producto->precioProductos, 2) }}</td>
               <td>
-                @if ($producto->estadoProductos === 'activo')
+                @if ($producto->estadoProductos === 'Activo')
                   <span class="badge bg-label-success">Activo</span>
                 @else
                   <span class="badge bg-label-danger">Inactivo</span>
                 @endif
               </td>
               <td class="text-center">
+                <button type="button" class="btn btn-sm btn-icon btn-success me-1" title="Ver">
+                  <i class="bx bx-show" style="color: white;"></i>
+                </button>
                 <button type="button" class="btn btn-sm btn-icon btn-warning me-1" title="Editar"
                   onclick="abrirModalEditar(
                     {{ $producto->idProductos }},
@@ -182,7 +167,7 @@
         },
         columnDefs: [{
             orderable: false,
-            targets: 7
+            targets: 5
           }, // Deshabilitar ordenación en la columna Acciones
         ],
         order: [
@@ -205,7 +190,7 @@
       script.src = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js";
       script.onload = function() {
         // Inicializar Select2 al abrir el modal de crear producto
-        $('#modalCrearProducto').on('shown.bs.modal', function () {
+        $('#modalCrearProducto').on('shown.bs.modal', function() {
           $('#categoriasidCreate, #marcasidCreate, #unidadesmedidasidCreate').select2({
             theme: 'bootstrap-5',
             dropdownParent: $('#modalCrearProducto'),

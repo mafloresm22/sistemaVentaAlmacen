@@ -38,8 +38,8 @@
               Nombre del Producto <span class="text-danger">*</span>
             </label>
             <input type="text" id="nombreProductosCreate" name="nombreProductos"
-              class="form-control @error('nombreProductos') is-invalid @enderror" placeholder="Ej: Arroz Premium 5kg"
-              maxlength="150" value="{{ old('nombreProductos') }}" required />
+              class="form-control @error('nombreProductos') is-invalid @enderror"
+              placeholder="Ej: ASUS Vivobook 16 Laptop" maxlength="150" value="{{ old('nombreProductos') }}" required />
             @error('nombreProductos')
               <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -64,10 +64,11 @@
 
           <div class="col-md-8">
             <label for="imagenCreate" class="form-label fw-medium">
-              Imagen del Producto <span class="text-muted">(opcional)</span>
+              Imagen del Producto <span class="text-danger">*</span>
             </label>
             <input type="file" id="imagenCreate" name="imagen"
-              class="form-control @error('imagen') is-invalid @enderror" accept="image/png,image/jpeg,image/webp" />
+              class="form-control @error('imagen') is-invalid @enderror" accept="image/png,image/jpeg,image/webp"
+              required />
             @error('imagen')
               <div class="invalid-feedback">{{ $message }}</div>
             @enderror

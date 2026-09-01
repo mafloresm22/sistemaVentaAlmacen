@@ -14,6 +14,15 @@ class Imagenes extends Model
         'productosid'
     ];
 
+    public function getUrlAttribute(): string
+    {
+        $baseUrl = rtrim(env('SUPABASE_URL'), '/');
+        $bucket  = config('filesystems.disks.supabase.bucket');
+        $path    = ltrim($this->rutaImagenes, '/');
+
+        return "{$baseUrl}/storage/v1/object/public/{$bucket}/{$path}";
+    }
+
     public function producto()
     {
         return $this->belongsTo(Productos::class, 'productosid', 'idProductos');

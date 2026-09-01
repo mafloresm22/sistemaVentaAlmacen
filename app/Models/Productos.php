@@ -46,6 +46,6 @@ class Productos extends Model
 
     public function stockAlmacen()
     {
-        return $this->hasMany(StockAlmacen::class, 'productosid', 'idProductos');
+        return $this->hasMany(StockAlmacen::class, 'productoid', 'idProductos');
     }
 }

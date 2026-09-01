@@ -106,12 +106,6 @@ Route::middleware(['auth'])->group(function () {
   Route::put('/roles/{idRoles}', [RolesController::class, 'update'])->name('roles.update');
   Route::delete('/roles/{idRoles}', [RolesController::class, 'destroy'])->name('roles.destroy');
 
-  // Módulo de Roles
-  Route::get('/roles', [RolesController::class, 'index'])->name('roles.index');
-  Route::post('/roles', [RolesController::class, 'store'])->name('roles.store');
-  Route::put('/roles/{idRoles}', [RolesController::class, 'update'])->name('roles.update');
-  Route::delete('/roles/{idRoles}', [RolesController::class, 'destroy'])->name('roles.destroy');
-
   // Módulo de Marcas
   Route::get('/marcas', [MarcasController::class, 'index'])->name('marcas.index');
   Route::post('/marcas', [MarcasController::class, 'store'])->name('marcas.store');
