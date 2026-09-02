@@ -17,12 +17,12 @@
         <div class="row g-3 mb-3">
           <div class="col-md-4">
             <label for="codigoProductoCreate" class="form-label fw-medium">
-              Código <span class="text-muted">(opcional)</span>
+              Código <span class="text-danger">*</span>
             </label>
             <div class="input-group">
               <input type="text" id="codigoProductoCreate" name="codigoProducto"
                 class="form-control @error('codigoProducto') is-invalid @enderror" placeholder="Escanee o vacío"
-                maxlength="64" value="{{ old('codigoProducto') }}" />
+                maxlength="64" value="{{ old('codigoProducto') }}" required />
               <button class="btn btn-outline-secondary" type="button" onclick="generarCodigoInterno()"
                 title="Generar código interno">
                 <i class="bx bx-barcode"></i>

@@ -57,9 +57,31 @@ class ProductosController extends Controller
         return redirect()->route('productos.index')->with('success', 'Producto creado exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function buscar(Request $request)
+    {
+        $query = Productos::with(['categoria', 'marca', 'unidadMedida', 'imagenes']);
+
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $query->where(function ($sub) use ($q) {
+                $sub->where('codigoProducto', 'like', "%{$q}%")
+                    ->orWhere('nombreProductos', 'like', "%{$q}%");
+            });
+        }
+
+        if ($request->filled('categoria_id')) {
+            $query->where('categoriasid', $request->categoria_id);
+        }
+
+        if ($request->filled('marca_id')) {
+            $query->where('marcasid', $request->marca_id);
+        }
+
+        $productos = $query->limit(20)->get();
+
+        return response()->json($productos);
+    }
+
     public function show(Productos $productos)
     {
         //

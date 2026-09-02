@@ -16,7 +16,7 @@
       <p class="text-muted mb-0">Gestiona los productos del sistema</p>
     </div>
     <div class="d-flex gap-2">
-      <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalbuscarProducto">
+      <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalBuscarProducto">
         <i class="bx bx-search me-1"></i> Buscar Producto
       </button>
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearProducto">
@@ -117,20 +117,16 @@
                 @endif
               </td>
               <td class="text-center">
-                <button type="button" class="btn btn-sm btn-icon btn-success me-1" title="Ver">
-                  <i class="bx bx-show" style="color: white;"></i>
-                </button>
                 <button type="button" class="btn btn-sm btn-icon btn-warning me-1" title="Editar"
                   onclick="abrirModalEditar(
                     {{ $producto->idProductos }},
-                    '{{ addslashes($producto->codigoProducto) }}',
-                    '{{ addslashes($producto->nombreProductos) }}',
-                    '{{ addslashes($producto->descripcionProductos) }}',
+                    {{ json_encode($producto->codigoProducto) }},
+                    {{ json_encode($producto->nombreProductos) }},
+                    {{ json_encode($producto->descripcionProductos) }},
                     '{{ addslashes($producto->precioProductos) }}',
                     {{ $producto->categoriasid }},
                     {{ $producto->marcasid }},
-                    {{ $producto->unidadesmedidasid }},
-                    '{{ addslashes($producto->estadoProductos) }}'
+                    {{ $producto->unidadesmedidasid }}
                   )">
                   <i class="bx bx-edit" style="color: white;"></i>
                 </button>
@@ -154,6 +150,7 @@
 
   @include('productos.modal_create')
   @include('productos.modal_edit')
+  @include('productos.modal_buscar')
 @endsection
 
 @section('page-script')
@@ -166,10 +163,9 @@
           url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
         },
         columnDefs: [{
-            orderable: false,
-            targets: 5
-          }, // Deshabilitar ordenación en la columna Acciones
-        ],
+          orderable: false,
+          targets: 5
+        }],
         order: [
           [0, 'asc']
         ],
@@ -185,11 +181,9 @@
         modal.show();
       @endif
 
-      // Cargar Select2 dinámicamente para evitar conflicto de módulos (Vite jQuery)
       let script = document.createElement('script');
       script.src = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js";
       script.onload = function() {
-        // Inicializar Select2 al abrir el modal de crear producto
         $('#modalCrearProducto').on('shown.bs.modal', function() {
           $('#categoriasidCreate, #marcasidCreate, #unidadesmedidasidCreate').select2({
             theme: 'bootstrap-5',
@@ -211,7 +205,6 @@
       document.getElementById('editCategoria').value = categoriaId;
       document.getElementById('editMarca').value = marcaId;
       document.getElementById('editUnidad').value = unidadId;
-      document.getElementById('editEstado').value = estado;
       document.getElementById('formEditarProducto').action = '/productos/' + id;
 
       new bootstrap.Modal(document.getElementById('modalEditarProducto')).show();

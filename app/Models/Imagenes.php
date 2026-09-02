@@ -14,6 +14,8 @@ class Imagenes extends Model
         'productosid'
     ];
 
+    protected $appends = ['url'];
+
     public function getUrlAttribute(): string
     {
         $baseUrl = rtrim(env('SUPABASE_URL'), '/');

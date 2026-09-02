@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
   // Módulo de Productos
   Route::get('/productos', [ProductosController::class, 'index'])->name('productos.index');
   Route::post('/productos', [ProductosController::class, 'store'])->name('productos.store');
+  Route::get('/productos/buscar', [ProductosController::class, 'buscar'])->name('productos.buscar');
   Route::get('/productos/{idProductos}', [ProductosController::class, 'show'])->name('productos.show');
   Route::put('/productos/{idProductos}', [ProductosController::class, 'update'])->name('productos.update');
   Route::delete('/productos/{idProductos}', [ProductosController::class, 'destroy'])->name('productos.destroy');
