@@ -1,27 +1,38 @@
 {
   "menu": [
     {
-      "url": "/categorias",
-      "name": "Categorias",
-      "icon": "menu-icon icon-base bx bx-category",
-      "slug": "categorias.index"
+      "menuHeader": "Principal"
     },
     {
-      "url": "/roles",
-      "name": "Roles",
-      "icon": "menu-icon icon-base bx bx-user-check",
-      "slug": "roles.index"
+      "url": "/",
+      "name": "Inicio",
+      "icon": "menu-icon icon-base bx bx-home-circle",
+      "slug": "inicio"
+    },
+    {
+      "menuHeader": "Catálogo & Inventario"
     },
     {
       "name": "Productos",
       "icon": "menu-icon icon-base bx bx-box",
-      "slug": "productos",
+      "slug": [
+        "productos",
+        "categorias",
+        "marcas",
+        "unidades-medidas"
+      ],
       "submenu": [
         {
           "url": "/productos",
           "name": "Lista de Productos",
           "icon": "menu-icon icon-base bx bx-list-ul",
           "slug": "productos.index"
+        },
+        {
+          "url": "/categorias",
+          "name": "Categorías",
+          "icon": "menu-icon icon-base bx bx-category",
+          "slug": "categorias.index"
         },
         {
           "url": "/marcas",
@@ -31,17 +42,20 @@
         },
         {
           "url": "/unidades-medidas",
-          "name": "Un. Medida",
+          "name": "Unidades de Medida",
           "icon": "menu-icon icon-base bx bx-ruler",
           "slug": "unidades-medidas.index"
         }
       ]
     },
     {
-      "url": "/usuarios",
-      "name": "Usuarios",
-      "icon": "menu-icon icon-base bx bx-user",
-      "slug": "usuarios.index"
+      "menuHeader": "Ventas & Clientes"
+    },
+    {
+      "url": "/ventas",
+      "name": "Ventas",
+      "icon": "menu-icon icon-base bx bx-cart-alt",
+      "slug": "ventas.index"
     },
     {
       "url": "/clientes",
@@ -50,46 +64,61 @@
       "slug": "clientes.index"
     },
     {
-      "menuHeader": "Ventas"
-    },
-    {
-      "url": "/ventas",
-      "name": "Ventas",
-      "icon": "menu-icon icon-base bx bx-dollar",
-      "slug": "ventas.index"
-    },
-    {
       "url": "/reports",
       "name": "Reportes",
-      "icon": "menu-icon icon-base bx bx-bar-chart",
+      "icon": "menu-icon icon-base bx bx-bar-chart-alt-2",
       "slug": "reports.index"
     },
     {
-      "menuHeader": "Almacen"
+      "menuHeader": "Compras & Proveedores"
     },
     {
+      "url": "/compras",
+      "name": "Compras",
+      "icon": "menu-icon icon-base bx bx-shopping-bag",
+      "slug": "compras.index"
+    },
+    {
+      "url": "/proveedores",
+      "name": "Proveedores",
+      "icon": "menu-icon icon-base bx bxs-truck",
+      "slug": "proveedores.index"
+    },
+    {
+      "menuHeader": "Almacén & Logística"
+    },
+    {
+      "url": "/sucursales",
       "name": "Sucursales",
       "icon": "menu-icon icon-base bx bx-store",
-      "slug": "sucursales.index",
-      "url": "/sucursales"
-    },
-    {
-      "name": "Proveedores",
-      "icon": "menu-icon icon-base bx bx-box",
-      "slug": "proveedores.index",
-      "url": "/proveedores"
-    },
-    {
-      "name": "Movimientos",
-      "icon": "menu-icon icon-base bx bx-transfer",
-      "slug": "movimientos-inventario.index",
-      "url": "/movimientos-inventario"
+      "slug": "sucursales.index"
     },
     {
       "url": "/stock-almacen",
+      "name": "Stock Almacén",
       "icon": "menu-icon icon-base bx bx-package",
-      "name": "Estado Almacen",
       "slug": "stock-almacen.index"
+    },
+    {
+      "url": "/movimientos-inventario",
+      "name": "Movimientos (Kárdex)",
+      "icon": "menu-icon icon-base bx bx-transfer-alt",
+      "slug": "movimientos-inventario.index"
+    },
+    {
+      "menuHeader": "Seguridad & Accesos"
+    },
+    {
+      "url": "/roles",
+      "name": "Roles y Permisos",
+      "icon": "menu-icon icon-base bx bx-shield-quarter",
+      "slug": "roles.index"
+    },
+    {
+      "url": "/usuarios",
+      "name": "Usuarios",
+      "icon": "menu-icon icon-base bx bx-user",
+      "slug": "usuarios.index"
     }
   ]
 }

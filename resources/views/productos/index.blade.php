@@ -117,6 +117,17 @@
                 @endif
               </td>
               <td class="text-center">
+                <button type="button" class="btn btn-sm btn-icon btn-success me-1" title="Ver"
+                  onclick="abrirModalShow(
+                    {{ json_encode($producto->codigoProducto) }},
+                    {{ json_encode($producto->nombreProductos) }},
+                    {{ json_encode($producto->descripcionProductos) }},
+                    '{{ number_format($producto->precioProductos, 2) }}',
+                    '{{ $producto->categoria ? addslashes($producto->categoria->nombreCategorias) : 'Sin categoría' }}',
+                    '{{ $producto->estadoProductos }}'
+                  )">
+                  <i class="bx bx-show" style="color: white;"></i>
+                </button>
                 <button type="button" class="btn btn-sm btn-icon btn-warning me-1" title="Editar"
                   onclick="abrirModalEditar(
                     {{ $producto->idProductos }},
@@ -124,9 +135,9 @@
                     {{ json_encode($producto->nombreProductos) }},
                     {{ json_encode($producto->descripcionProductos) }},
                     '{{ addslashes($producto->precioProductos) }}',
-                    {{ $producto->categoriasid }},
-                    {{ $producto->marcasid }},
-                    {{ $producto->unidadesmedidasid }}
+                    {{ $producto->categoriasid ?? 'null' }},
+                    {{ $producto->marcasid ?? 'null' }},
+                    {{ $producto->unidadesmedidasid ?? 'null' }}
                   )">
                   <i class="bx bx-edit" style="color: white;"></i>
                 </button>
@@ -151,6 +162,7 @@
   @include('productos.modal_create')
   @include('productos.modal_edit')
   @include('productos.modal_buscar')
+  @include('productos.modal_show')
 @endsection
 
 @section('page-script')
@@ -195,6 +207,38 @@
       };
       document.head.appendChild(script);
     });
+
+    // Modal Ver Producto
+    function abrirModalShow(codigo, nombre, descripcion, precio, categoria, estado) {
+      document.getElementById('showCodigo').innerText = codigo || 'N/A';
+      document.getElementById('showNombre').innerText = nombre || 'Sin Nombre';
+      document.getElementById('showDescripcion').innerText = descripcion || 'Sin descripción';
+      document.getElementById('showPrecio').innerText = 'S/ ' + precio;
+      document.getElementById('showCategoria').innerText = categoria || 'Sin Categoría';
+
+      let badgeEstado = document.getElementById('showEstado');
+      if (estado === 'Activo') {
+        badgeEstado.innerHTML = '<span class="badge bg-label-success">Activo</span>';
+      } else {
+        badgeEstado.innerHTML = '<span class="badge bg-label-danger">Inactivo</span>';
+      }
+
+      let barcodeImg = document.getElementById('showBarcodeImage');
+      if (codigo) {
+        barcodeImg.style.display = 'inline-block';
+        JsBarcode("#showBarcodeImage", codigo, {
+          format: "CODE128",
+          lineColor: "#000",
+          width: 2,
+          height: 40,
+          displayValue: true
+        });
+      } else {
+        barcodeImg.style.display = 'none';
+      }
+
+      new bootstrap.Modal(document.getElementById('modalVerProducto')).show();
+    }
 
     // Modal Editar Producto
     function abrirModalEditar(id, codigo, nombre, descripcion, precio, categoriaId, marcaId, unidadId, estado) {

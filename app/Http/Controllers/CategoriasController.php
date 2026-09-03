@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categorias;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class CategoriasController extends Controller
 {
@@ -48,7 +49,14 @@ class CategoriasController extends Controller
     public function destroy($idCategorias)
     {
         $categorias = Categorias::findOrFail($idCategorias);
-        $categorias->delete();
-        return redirect()->route('categorias.index')->with('success', 'Categoría eliminada correctamente.');
+        try {
+            $categorias->delete();
+            return redirect()->route('categorias.index')->with('success', 'Categoría eliminada correctamente.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('categorias.index')->with('error', 'No se puede eliminar la categoría "' . $categorias->nombreCategorias . '" porque tiene productos asignados. Reasigne o elimine los productos primero.');
+            }
+            return redirect()->route('categorias.index')->with('error', 'Ocurrió un error inesperado al intentar eliminar la categoría.');
+        }
     }
 }

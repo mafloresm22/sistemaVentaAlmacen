@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UnidadesMedidas;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class UnidadesMedidasController extends Controller
 {
@@ -66,8 +67,11 @@ class UnidadesMedidasController extends Controller
         $unidad = UnidadesMedidas::findOrFail($idUnidadesMedidas);
         $unidad->delete();
         return redirect()->route('unidades-medidas.index')->with('success', 'Unidad de medida eliminada correctamente.');
-    } catch (\Exception $e) {
-        return redirect()->route('unidades-medidas.index')->with('error', 'No se puede eliminar la unidad de medida porque está siendo utilizada en el sistema.');
+    } catch (QueryException $e) {
+        if ($e->getCode() == 23000) {
+            return redirect()->route('unidades-medidas.index')->with('error', 'No se puede eliminar la unidad de medida "' . $unidad->nameUnidadesMedidas . '" porque está siendo usada por productos del catálogo. Reasigne los productos primero.');
+        }
+        return redirect()->route('unidades-medidas.index')->with('error', 'Ocurrió un error inesperado al intentar eliminar la unidad de medida.');
     }
   }
 }

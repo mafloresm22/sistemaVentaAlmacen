@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Marcas;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class MarcasController extends Controller
 {
@@ -61,8 +62,11 @@ class MarcasController extends Controller
         $marcas = Marcas::findOrFail($idMarcas);
         $marcas->delete();
         return redirect()->route('marcas.index')->with('success', 'Marca eliminada correctamente.');
-    } catch (\Exception $e) {
-        return redirect()->route('marcas.index')->with('error', 'No se puede eliminar la marca porque está siendo utilizada en el sistema.');
+    } catch (QueryException $e) {
+        if ($e->getCode() == 23000) {
+            return redirect()->route('marcas.index')->with('error', 'No se puede eliminar la marca "' . $marcas->nameMarcas . '" porque tiene productos asignados. Reasigne o elimine los productos primero.');
+        }
+        return redirect()->route('marcas.index')->with('error', 'Ocurrió un error inesperado al intentar eliminar la marca.');
     }
   }
 }

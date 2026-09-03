@@ -8,6 +8,8 @@ use App\Models\Marcas;
 use App\Models\UnidadesMedidas;
 use App\Models\Imagenes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\QueryException;
 
 class ProductosController extends Controller
 {
@@ -82,32 +84,60 @@ class ProductosController extends Controller
         return response()->json($productos);
     }
 
-    public function show(Productos $productos)
+    public function update(Request $request, $idProductos)
     {
-        //
+        $producto = Productos::findOrFail($idProductos);
+        $validated = $request->validate([
+            'codigoProducto' => 'nullable|string|max:64',
+            'nombreProductos' => 'required|string|max:150',
+            'precioProductos' => 'required|numeric|min:0',
+            'categoriasid' => 'required|integer',
+            'marcasid' => 'required|integer',
+            'unidadesmedidasid' => 'nullable|integer',
+            'descripcionProductos' => 'nullable|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $producto->update($validated);
+
+        if ($request->hasFile('imagen')) {
+            $path = $request->file('imagen')->store('productos', 'supabase');
+
+            if ($path !== false) {
+                $imagenActual = Imagenes::where('productosid', $producto->idProductos)->first();
+                
+                if ($imagenActual) {
+                    $imagenActual->update([
+                        'nombreImagenes' => $request->file('imagen')->getClientOriginalName(),
+                        'rutaImagenes'   => $path,
+                    ]);
+                } else {
+                    Imagenes::create([
+                        'nombreImagenes' => $request->file('imagen')->getClientOriginalName(),
+                        'rutaImagenes'   => $path,
+                        'productosid'    => $producto->idProductos,
+                    ]);
+                }
+            } else {
+                return redirect()->route('productos.index')
+                    ->withErrors(['imagen' => 'No se pudo subir la nueva imagen al servidor.']);
+            }
+        }
+
+        return redirect()->route('productos.index')->with('success', 'Producto actualizado exitosamente.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Productos $productos)
+    public function destroy($idProductos)
     {
-        //
-    }
+        try {
+            $producto = Productos::findOrFail($idProductos);
+            
+            $producto->estadoProductos = 'Inactivo';
+            $producto->save();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Productos $productos)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Productos $productos)
-    {
-        //
+            return redirect()->route('productos.index')->with('success', 'Producto inactivado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('productos.index')->with('error', 'Ocurrió un error al intentar inactivar el producto.');
+        }
     }
 }

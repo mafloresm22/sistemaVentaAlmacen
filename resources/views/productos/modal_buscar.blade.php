@@ -79,14 +79,23 @@
 <script>
   let debounceTimer;
 
+  document.addEventListener('DOMContentLoaded', function() {
+    const modalBuscarProductoEl = document.getElementById('modalBuscarProducto');
+    if (modalBuscarProductoEl) {
+      modalBuscarProductoEl.addEventListener('show.bs.modal', function(event) {
+        buscarProducto();
+      });
+    }
+  });
+
   function ejecutarBusquedaBackend() {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-      realizarPeticion();
+      buscarProducto();
     }, 300);
   }
 
-  function realizarPeticion() {
+  function buscarProducto() {
     const q = document.getElementById('buscarProductoInput').value;
     const categoriaId = document.getElementById('filtroCategoriaModal').value;
     const marcaId = document.getElementById('filtroMarcaModal').value;
@@ -121,6 +130,7 @@
           return;
         }
 
+        let filasHtml = '';
         productos.forEach(producto => {
           const nombreCat = producto.categoria ? producto.categoria.nombreCategorias : 'N/A';
           const nombreMarca = producto.marca ? producto.marca.nameMarcas : 'N/A';
@@ -136,29 +146,31 @@
               `<img src="${producto.imagenes[0].url}" class="rounded me-2" width="40" height="40" style="object-fit: cover;">`;
           }
 
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-          <td><span class="badge bg-label-dark">${producto.codigoProducto ?? ''}</span></td>
-          <td>
-            <div class="d-flex align-items-center">
-              ${imgTag}
-              <div>
-                <h6 class="mb-0 text-truncate" style="max-width: 200px;">${producto.nombreProductos}</h6>
+          filasHtml += `
+          <tr>
+            <td><span class="badge bg-label-dark">${producto.codigoProducto ?? ''}</span></td>
+            <td>
+              <div class="d-flex align-items-center">
+                ${imgTag}
+                <div>
+                  <h6 class="mb-0 text-truncate" style="max-width: 200px;">${producto.nombreProductos}</h6>
+                </div>
               </div>
-            </div>
-          </td>
-          <td>${nombreCat}</td>
-          <td>${nombreMarca}</td>
-          <td><small class="fw-bold text-success">S/ ${precio}</small></td>
-          <td class="text-center">
-            <button type="button" class="btn btn-sm btn-info text-white"
-              onclick="visualizarProducto(${producto.idProductos})">
-              <i class="bx bx-show me-1"></i> Visualizar
-            </button>
-          </td>
+            </td>
+            <td>${nombreCat}</td>
+            <td>${nombreMarca}</td>
+            <td><small class="fw-bold text-success">S/ ${precio}</small></td>
+            <td class="text-center">
+              <button type="button" class="btn btn-sm btn-info text-white"
+                onclick="verStockProducto(${producto.idProductos})">
+                <i class="bx bx-show me-1"></i> Ver Stock
+              </button>
+            </td>
+          </tr>
         `;
-          tbody.appendChild(tr);
         });
+
+        tbody.innerHTML = filasHtml;
       })
       .catch(error => {
         console.error('Error al buscar productos:', error);
@@ -168,12 +180,6 @@
         </tr>
       `;
       });
-  }
-
-  function visualizarProducto(id) {
-    // Aquí puedes redirigir, abrir otro modal, o mostrar un offcanvas con el detalle
-    console.log('Visualizar producto id:', id);
-    // Ejemplo: window.location.href = `/productos/${id}`;
   }
 
   function seleccionarProducto(id, nombre, precio) {

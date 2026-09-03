@@ -123,11 +123,11 @@
             </label>
             <select id="unidadesmedidasidCreate" name="unidadesmedidasid"
               class="form-select select2 @error('unidadesmedidasid') is-invalid @enderror"
-              data-placeholder="-- Ninguno --">
+              data-placeholder="-- Seleccione --">
               <option value=""></option>
               @foreach ($unidadesMedida as $unidad)
                 <option value="{{ $unidad->idUnidadesMedidas }}"
-                  {{ old('unidadesmedidasid') == $unidad->idUnidadesMedidas ? 'selected' : '' }}>
+                  {{ old('unidadesmedidasid', 1) == $unidad->idUnidadesMedidas ? 'selected' : '' }}>
                   {{ $unidad->nameUnidadesMedidas }} ({{ $unidad->simboloUnMedidas }})
                 </option>
               @endforeach
