@@ -2,12 +2,6 @@
 
 @section('title', 'Productos')
 
-@section('vendor-style')
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-@endsection
-
-
-
 @section('content')
 
   <div class="d-flex justify-content-between align-items-center mb-4">

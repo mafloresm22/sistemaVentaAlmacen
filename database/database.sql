@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS "Proveedores" (
 	"telefonoProveedores" varchar(255) NOT NULL,
 	"correoProveedores" varchar(255) NOT NULL,
 	"diasEntregaProveedores" integer NULL,
-	"calificacionProveedores" numeric(2,1) NULL CHECK ("calificacionProveedores" >= 1.0 AND "calificacionProveedores" <= 5.0),
+
 	PRIMARY KEY ("idProveedores")
 );
 CREATE TABLE IF NOT EXISTS "Compras" (

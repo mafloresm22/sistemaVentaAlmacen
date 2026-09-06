@@ -11,7 +11,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Make Helper accessible globally (e.g. from Blade views) without a use statement
+        class_alias(\App\Helpers\Helper::class, 'Helper');
     }
 
     /**

@@ -16,6 +16,8 @@ use App\Http\Controllers\MarcasController;
 use App\Http\Controllers\UnidadesMedidasController;
 use App\Http\Controllers\MovimientosInventarioController;
 use App\Http\Controllers\DetalleVentasController;
+use App\Http\Controllers\ComprasController;
+use App\Http\Controllers\DetalleComprasController;
 
 
 
@@ -62,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
   // Modulo de Proveedores
   Route::get('/proveedores', [ProveedoresController::class, 'index'])->name('proveedores.index');
   Route::post('/proveedores', [ProveedoresController::class, 'store'])->name('proveedores.store');
+  Route::get('/proveedores/buscar', [ProveedoresController::class,'buscar'])->name('proveedores.buscar');
   Route::get('/proveedores/{idProveedores}', [ProveedoresController::class, 'show'])->name('proveedores.show');
   Route::put('/proveedores/{idProveedores}', [ProveedoresController::class, 'update'])->name('proveedores.update');
   Route::delete('/proveedores/{idProveedores}', [ProveedoresController::class, 'destroy'])->name('proveedores.destroy');
@@ -123,4 +126,15 @@ Route::middleware(['auth'])->group(function () {
   // Módulo de Detalle Ventas
   Route::get('/detalle-ventas', [DetalleVentasController::class, 'index'])->name('detalle-ventas.index');
   Route::get('/detalle-ventas/{idDetalleVentas}', [DetalleVentasController::class, 'show'])->name('detalle-ventas.show');
+
+  // Módulo de Compras
+  Route::get('/compras', [ComprasController::class, 'index'])->name('compras.index');
+  Route::post('/compras', [ComprasController::class, 'store'])->name('compras.store');
+  Route::get('/compras/{idCompras}', [ComprasController::class, 'show'])->name('compras.show');
+  Route::put('/compras/{idCompras}', [ComprasController::class, 'update'])->name('compras.update');
+  Route::delete('/compras/{idCompras}', [ComprasController::class, 'destroy'])->name('compras.destroy');
+
+  // Módulo de Detalle Compras
+  Route::get('/detalle-compras', [DetalleComprasController::class, 'index'])->name('detalle-compras.index');
+  Route::get('/detalle-compras/{idDetalleCompras}', [DetalleComprasController::class, 'show'])->name('detalle-compras.show');
 });
