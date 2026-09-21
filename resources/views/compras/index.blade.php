@@ -134,15 +134,39 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       @if ($errors->any())
-        var modal = new bootstrap.Modal(document.getElementById('modalCrearCompra'));
-        modal.show();
+        @if (old('_method') === 'PUT')
+          var modal = new bootstrap.Modal(document.getElementById('modalEditarCompra'));
+          modal.show();
+        @else
+          var modal = new bootstrap.Modal(document.getElementById('modalCrearCompra'));
+          modal.show();
+        @endif
       @endif
+
+      // Si hay productos seleccionados previamente (ej. tras un error de validación), renderizarlos
+      if (productosSeleccionados.length > 0) {
+        renderTablaProductos();
+      }
     });
 
-    // ─── Productos dinámicos ───────────────────────────────────────
+    const productosData = @json($productos);
     let productosSeleccionados = [];
 
-    const productosData = @json($productos);
+    const oldProductos = @json(old('productos', []));
+    if (oldProductos && oldProductos.length > 0) {
+      oldProductos.forEach(op => {
+        const prod = productosData.find(p => p.idProductos == op.id);
+        if (prod) {
+          productosSeleccionados.push({
+            id: parseInt(op.id),
+            nombre: prod.nombreProductos,
+            cantidad: parseFloat(op.cantidad),
+            precio: parseFloat(op.precio),
+            subtotal: parseFloat(op.cantidad) * parseFloat(op.precio)
+          });
+        }
+      });
+    }
 
     function agregarProducto() {
       const select = document.getElementById('productoSelect');

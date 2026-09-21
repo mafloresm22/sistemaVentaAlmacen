@@ -67,7 +67,8 @@
                     {{ $proveedor->nombreProveedores }}
                   </h6>
                   <small class="text-muted text-truncate d-block">
-                    <span class="fw-semibold">{{ $proveedor->tipodocumentoProveedores }}:</span> {{ $proveedor->numerodocumentoProveedores }}
+                    <span class="fw-semibold">{{ $proveedor->tipodocumentoProveedores }}:</span>
+                    {{ $proveedor->numeroDocumentoProveedores }}
                   </small>
                 </div>
               </div>
@@ -87,7 +88,8 @@
             </div>
 
             {{-- Pie de Card: Días de Entrega y Acciones --}}
-            <div class="d-flex align-items-center justify-content-between pt-3 mt-1 border-top border-white border-opacity-50">
+            <div
+              class="d-flex align-items-center justify-content-between pt-3 mt-1 border-top border-white border-opacity-50">
               {{-- Días de entrega --}}
               <span class="badge bg-white text-dark shadow-xs fw-normal px-2 py-1" title="Días de entrega">
                 <i class="bx bx-time me-1 text-warning"></i> {{ $proveedor->diasEntregaProveedores ?? 'N/A' }} días
@@ -141,16 +143,21 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       @if ($errors->any())
-        var modal = new bootstrap.Modal(document.getElementById('modalCrearProveedor'));
-        modal.show();
+        @if (old('_method') === 'PUT')
+          var modal = new bootstrap.Modal(document.getElementById('modalEditarProveedor'));
+          modal.show();
+        @else
+          var modal = new bootstrap.Modal(document.getElementById('modalCrearProveedor'));
+          modal.show();
+        @endif
       @endif
     });
 
-    // Función para abrir modal de edición poblando los campos dinámicamente
+    // Función para abrir modal de edición
     function abrirModalEditar(proveedor) {
       document.getElementById('editNombre').value = proveedor.nombreProveedores;
       document.getElementById('editTipoDoc').value = proveedor.tipodocumentoProveedores;
-      document.getElementById('editNumDoc').value = proveedor.numerodocumentoProveedores;
+      document.getElementById('editNumDoc').value = proveedor.numeroDocumentoProveedores;
       document.getElementById('editDireccion').value = proveedor.direccionProveedores;
       document.getElementById('editTelefono').value = proveedor.telefonoProveedores;
       document.getElementById('editCorreo').value = proveedor.correoProveedores;
@@ -166,7 +173,7 @@
       modal.show();
     }
 
-    // Confirmación de eliminación con SweetAlert2
+    // Confirmación de eliminación
     function confirmarEliminar(id, nombre) {
       Swal.fire({
         title: '¿Eliminar proveedor?',
@@ -177,11 +184,6 @@
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Sí, eliminar',
         cancelButtonText: 'Cancelar',
-        customClass: {
-          confirmButton: 'btn btn-danger me-3',
-          cancelButton: 'btn btn-label-secondary'
-        },
-        buttonsStyling: false
       }).then((result) => {
         if (result.isConfirmed) {
           document.getElementById('form-delete-' + id).submit();
