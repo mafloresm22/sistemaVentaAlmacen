@@ -12,6 +12,7 @@ class Compras extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'tipoComprobanteCompras',
         'numeroFacturaCompras',
         'fechaEmisionCompras',
         'totalCompras',

@@ -7,59 +7,56 @@ use Illuminate\Http\Request;
 
 class SucursalesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $sucursales = Sucursales::where('estadoSucursales', 'Activo')->orderBy('idSucursales', 'asc')->get();
+        return view('sucursales.index', compact('sucursales'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombreSucursales' => 'required|string|max:150|unique:Sucursales,nombreSucursales',
+            'ubicacionSucursales' => 'required|string|max:150',
+        ]);
+
+        Sucursales::create([
+            'nombreSucursales' => $request->nombreSucursales,
+            'ubicacionSucursales' => $request->ubicacionSucursales,
+            'estadoSucursales' => 'Activo',
+        ]);
+
+        return redirect()->route('sucursales.index')->with('success', 'Sucursal creada correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Sucursales $sucursales)
+    public function update(Request $request, $idSucursales)
     {
-        //
+        $request->validate([
+            'nombreSucursales' => 'required|string|max:150|unique:Sucursales,nombreSucursales,' . $idSucursales . ',idSucursales',
+            'ubicacionSucursales' => 'required|string|max:150',
+        ]);
+
+        $sucursal = Sucursales::findOrFail($idSucursales);
+
+        $sucursal->update([
+            'nombreSucursales' => $request->nombreSucursales,
+            'ubicacionSucursales' => $request->ubicacionSucursales,
+        ]);
+
+        return redirect()->route('sucursales.index')->with('success', 'Sucursal actualizada correctamente.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Sucursales $sucursales)
+    public function destroy($idSucursales)
     {
-        //
-    }
+        try {
+            $sucursales = Sucursales::findOrFail($idSucursales);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Sucursales $sucursales)
-    {
-        //
-    }
+            $sucursales->estadoSucursales = 'Inactivo';
+            $sucursales->save();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Sucursales $sucursales)
-    {
-        //
+            return redirect()->route('sucursales.index')->with('success', 'Sucursal eliminada correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('sucursales.index')->with('error', 'Ocurrió un error al intentar eliminar la sucursal.');
+        }
     }
 }

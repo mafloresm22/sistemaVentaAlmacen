@@ -17,10 +17,10 @@ class ComprasController extends Controller
     {
         $compras = Compras::with(['proveedor', 'sucursal', 'user'])
             ->orderBy('idCompras', 'desc')
-            ->paginate(15);
+            ->get();
 
         $proveedores = Proveedores::orderBy('nombreProveedores', 'asc')->get();
-        $sucursales  = Sucursales::orderBy('idSucursales', 'asc')->get();
+        $sucursales  = Sucursales::where('estadoSucursales', 'Activo')->orderBy('idSucursales', 'asc')->get();
         $productos   = Productos::orderBy('nombreProductos', 'asc')->get();
 
         return view('compras.index', compact('compras', 'proveedores', 'sucursales', 'productos'));
@@ -29,6 +29,7 @@ class ComprasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'tipoComprobanteCompras' => 'nullable|string|max:50',
             'numeroFacturaCompras'  => 'required|string|max:50|unique:compras,numeroFacturaCompras',
             'fechaEmisionCompras'   => 'required|date',
             'estadoCompras'         => 'required|in:PAGADO,PENDIENTE,ANULADO',
@@ -39,7 +40,7 @@ class ComprasController extends Controller
             'productos.*.cantidad'  => 'required|numeric|min:0.01',
             'productos.*.precio'    => 'required|numeric|min:0',
         ], [
-            'numeroFacturaCompras.unique' => 'El número de factura ya está registrado.',
+            'numeroFacturaCompras.unique' => 'El número de comprobante/factura ya está registrado.',
             'productos.required'          => 'Debe agregar al menos un producto.',
         ]);
 
@@ -51,10 +52,11 @@ class ComprasController extends Controller
             }
 
             $compra = Compras::create([
+                'tipoComprobanteCompras' => $request->tipoComprobanteCompras ?? 'Factura',
                 'numeroFacturaCompras' => $request->numeroFacturaCompras,
                 'fechaEmisionCompras'  => $request->fechaEmisionCompras,
                 'totalCompras'         => $total,
-                'estadoCompras'        => $request->estadoCompras,
+                'estadoCompras'        => $request->estadoCompras ?? 'PENDIENTE',
                 'proveedoresid'        => $request->proveedoresid,
                 'sucursalesid'         => $request->sucursalesid,
                 'usersid'              => auth()->id(),
@@ -75,7 +77,7 @@ class ComprasController extends Controller
             return redirect()->route('compras.index')->with('success', 'Compra registrada correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('compras.index')->with('error', 'Ocurrió un error al registrar la compra.');
+            return redirect()->route('compras.index')->with('error', 'Ocurrió un error al registrar la compra: ' . $e->getMessage());
         }
     }
 
@@ -84,7 +86,7 @@ class ComprasController extends Controller
         $compra = Compras::with(['proveedor', 'sucursal', 'user', 'detalles.producto'])
             ->findOrFail($idCompras);
 
-        return view('compras.show', compact('compra'));
+        return view('compras.index_detalleCompra', compact('compra'));
     }
 
     public function update(Request $request, $idCompras)

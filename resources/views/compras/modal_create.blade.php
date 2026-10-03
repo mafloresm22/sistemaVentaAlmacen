@@ -3,21 +3,37 @@
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title"><i class="bx bx-cart-add me-2 text-primary"></i>Nueva Compra</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header bg-primary">
+        <h5 class="modal-title text-white mb-0">Nueva Compra</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <form action="{{ route('compras.store') }}" method="POST" id="formCrearCompra">
         @csrf
         <div class="modal-body">
 
-          <div class="row g-3 mb-4">
-            {{-- Número de Factura --}}
+          <div class="row g-3 mb-3">
+            {{-- Tipo de Comprobante --}}
             <div class="col-md-4">
-              <label class="form-label fw-semibold">N° Factura <span class="text-danger">*</span></label>
-              <input type="text" name="numeroFacturaCompras" class="form-control @error('numeroFacturaCompras') is-invalid @enderror"
-                placeholder="Ej: F001-00001" value="{{ old('numeroFacturaCompras') }}" required>
+              <label class="form-label fw-semibold">Tipo Comprobante <span class="text-danger">*</span></label>
+              <select name="tipoComprobanteCompras" class="form-select @error('tipoComprobanteCompras') is-invalid @enderror" required>
+                <option value="Factura" {{ old('tipoComprobanteCompras', 'Factura') == 'Factura' ? 'selected' : '' }}>Factura</option>
+                <option value="Boleta" {{ old('tipoComprobanteCompras') == 'Boleta' ? 'selected' : '' }}>Boleta</option>
+                <option value="Ticket" {{ old('tipoComprobanteCompras') == 'Ticket' ? 'selected' : '' }}>Ticket</option>
+                <option value="Nota de Crédito" {{ old('tipoComprobanteCompras') == 'Nota de Crédito' ? 'selected' : '' }}>Nota de Crédito</option>
+                <option value="Otro" {{ old('tipoComprobanteCompras') == 'Otro' ? 'selected' : '' }}>Otro</option>
+              </select>
+              @error('tipoComprobanteCompras')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+
+            {{-- Número de Comprobante --}}
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">N° Comprobante <span class="text-danger">*</span></label>
+              <input type="text" name="numeroFacturaCompras"
+                class="form-control @error('numeroFacturaCompras') is-invalid @enderror" placeholder="Ej: F001-00001"
+                value="{{ old('numeroFacturaCompras') }}" required>
               @error('numeroFacturaCompras')
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror
@@ -26,33 +42,25 @@
             {{-- Fecha de Emisión --}}
             <div class="col-md-4">
               <label class="form-label fw-semibold">Fecha de Emisión <span class="text-danger">*</span></label>
-              <input type="datetime-local" name="fechaEmisionCompras" class="form-control @error('fechaEmisionCompras') is-invalid @enderror"
+              <input type="datetime-local" name="fechaEmisionCompras"
+                class="form-control @error('fechaEmisionCompras') is-invalid @enderror"
                 value="{{ old('fechaEmisionCompras') }}" required>
               @error('fechaEmisionCompras')
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror
             </div>
 
-            {{-- Estado --}}
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
-              <select name="estadoCompras" class="form-select @error('estadoCompras') is-invalid @enderror" required>
-                <option value="PENDIENTE" {{ old('estadoCompras') == 'PENDIENTE' ? 'selected' : '' }}>PENDIENTE</option>
-                <option value="PAGADO"    {{ old('estadoCompras') == 'PAGADO'    ? 'selected' : '' }}>PAGADO</option>
-                <option value="ANULADO"   {{ old('estadoCompras') == 'ANULADO'   ? 'selected' : '' }}>ANULADO</option>
-              </select>
-              @error('estadoCompras')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
-
             {{-- Proveedor --}}
-            <div class="col-md-6">
-              <label class="form-label fw-semibold">Proveedor <span class="text-danger">*</span></label>
-              <select name="proveedoresid" class="form-select @error('proveedoresid') is-invalid @enderror" required>
-                <option value="">— Seleccionar proveedor —</option>
+            <div class="col-md-4">
+              <label for="proveedoresidCreate" class="form-label fw-semibold">Proveedor <span
+                  class="text-danger">*</span></label>
+              <select id="proveedoresidCreate" name="proveedoresid"
+                class="form-select select2 @error('proveedoresid') is-invalid @enderror"
+                data-placeholder="-- Seleccionar proveedor --" required>
+                <option value=""></option>
                 @foreach ($proveedores as $prov)
-                  <option value="{{ $prov->idProveedores }}" {{ old('proveedoresid') == $prov->idProveedores ? 'selected' : '' }}>
+                  <option value="{{ $prov->idProveedores }}"
+                    {{ old('proveedoresid') == $prov->idProveedores ? 'selected' : '' }}>
                     {{ $prov->nombreProveedores }}
                   </option>
                 @endforeach
@@ -63,13 +71,17 @@
             </div>
 
             {{-- Sucursal --}}
-            <div class="col-md-6">
-              <label class="form-label fw-semibold">Sucursal <span class="text-danger">*</span></label>
-              <select name="sucursalesid" class="form-select @error('sucursalesid') is-invalid @enderror" required>
-                <option value="">— Seleccionar sucursal —</option>
+            <div class="col-md-4">
+              <label for="sucursalesidCreate" class="form-label fw-semibold">Sucursal <span
+                  class="text-danger">*</span></label>
+              <select id="sucursalesidCreate" name="sucursalesid"
+                class="form-select select2 @error('sucursalesid') is-invalid @enderror"
+                data-placeholder="-- Seleccionar sucursal --" required>
+                <option value=""></option>
                 @foreach ($sucursales as $suc)
-                  <option value="{{ $suc->idSucursales }}" {{ old('sucursalesid') == $suc->idSucursales ? 'selected' : '' }}>
-                    {{ $suc->nombreSucursales ?? 'Sucursal ' . $suc->idSucursales }}
+                  <option value="{{ $suc->idSucursales }}"
+                    {{ old('sucursalesid') == $suc->idSucursales ? 'selected' : '' }}>
+                    {{ $suc->nombreSucursales }}
                   </option>
                 @endforeach
               </select>
@@ -77,18 +89,32 @@
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror
             </div>
+
+            {{-- Estado --}}
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
+              <select class="form-select @error('estadoCompras') is-invalid @enderror" disabled>
+                <option value="PENDIENTE" selected>PENDIENTE</option>
+                <option value="PAGADO">PAGADO</option>
+                <option value="ANULADO">ANULADO</option>
+              </select>
+              <input type="hidden" name="estadoCompras" value="PENDIENTE">
+              @error('estadoCompras')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
           </div>
 
           {{-- Separador --}}
-          <hr class="my-2">
+          <hr class="my-3">
           <h6 class="fw-bold mb-3"><i class="bx bx-list-ul me-1 text-primary"></i>Detalle de Productos</h6>
 
           {{-- Agregar producto --}}
           <div class="row g-2 align-items-end mb-3">
             <div class="col-md-5">
-              <label class="form-label fw-semibold">Producto</label>
-              <select id="productoSelect" class="form-select">
-                <option value="">— Seleccionar producto —</option>
+              <label for="productoSelect" class="form-label fw-semibold">Producto</label>
+              <select id="productoSelect" class="form-select select2" data-placeholder="-- Seleccionar producto --">
+                <option value=""></option>
                 @foreach ($productos as $prod)
                   <option value="{{ $prod->idProductos }}">{{ $prod->nombreProductos }}</option>
                 @endforeach
@@ -115,14 +141,14 @@
 
           {{-- Tabla de productos seleccionados --}}
           <div class="table-responsive">
-            <table class="table table-bordered table-sm align-middle">
+            <table class="table table-bordered table-sm align-middle mb-0">
               <thead class="table-light">
                 <tr>
                   <th>Producto</th>
                   <th>Cantidad</th>
                   <th>Precio Unit.</th>
                   <th>Subtotal</th>
-                  <th></th>
+                  <th style="width: 50px;"></th>
                 </tr>
               </thead>
               <tbody id="tablaProductosBody">
@@ -147,10 +173,8 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">
-            <i class="bx bx-save me-1"></i>Registrar Compra
-          </button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Registrar Compra</button>
         </div>
       </form>
 

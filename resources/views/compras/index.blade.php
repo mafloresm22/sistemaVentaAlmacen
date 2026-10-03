@@ -30,99 +30,72 @@
   @endif
 
   {{-- Tabla de Compras --}}
-  <div class="card shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th class="ps-3">#</th>
-              <th>N° Factura</th>
-              <th>Proveedor</th>
-              <th>Sucursal</th>
-              <th>Fecha Emisión</th>
-              <th>Total</th>
-              <th>Estado</th>
-              <th>Registrado por</th>
-              <th class="text-center pe-3">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @forelse ($compras as $compra)
-              <tr>
-                <td class="ps-3 text-muted small">{{ $compra->idCompras }}</td>
-                <td class="fw-semibold">{{ $compra->numeroFacturaCompras }}</td>
-                <td>
-                  <span class="d-flex align-items-center gap-2">
-                    <span class="avatar avatar-xs">
-                      <span class="avatar-initial rounded-circle bg-label-info">
-                        <i class="bx bx-building fs-6"></i>
-                      </span>
-                    </span>
-                    {{ $compra->proveedor->nombreProveedores ?? '—' }}
-                  </span>
-                </td>
-                <td>{{ $compra->sucursal->nombreSucursales ?? '—' }}</td>
-                <td>{{ \Carbon\Carbon::parse($compra->fechaEmisionCompras)->format('d/m/Y') }}</td>
-                <td class="fw-bold text-success">S/ {{ number_format($compra->totalCompras, 2) }}</td>
-                <td>
-                  @php
-                    $badge = match ($compra->estadoCompras) {
-                        'PAGADO' => 'bg-label-success',
-                        'PENDIENTE' => 'bg-label-warning',
-                        'ANULADO' => 'bg-label-danger',
-                        default => 'bg-label-secondary',
-                    };
-                  @endphp
-                  <span class="badge {{ $badge }}">{{ $compra->estadoCompras }}</span>
-                </td>
-                <td>
-                  <span class="text-muted small">{{ $compra->user->name ?? '—' }}</span>
-                </td>
-                <td class="text-center pe-3">
-                  <div class="d-flex justify-content-center gap-1">
-                    {{-- Ver detalle --}}
-                    <a href="{{ route('compras.show', $compra->idCompras) }}"
-                      class="btn btn-icon btn-sm btn-white text-info shadow-xs" title="Ver detalles">
-                      <i class="bx bx-show fs-6"></i>
-                    </a>
-                    {{-- Editar estado --}}
-                    <button type="button" class="btn btn-icon btn-sm btn-white text-primary shadow-xs"
-                      title="Cambiar estado" onclick="abrirModalEditar({{ json_encode($compra) }})">
-                      <i class="bx bx-edit fs-6"></i>
-                    </button>
-                    {{-- Eliminar --}}
-                    <form id="form-delete-{{ $compra->idCompras }}"
-                      action="{{ route('compras.destroy', $compra->idCompras) }}" method="POST">
-                      @csrf
-                      @method('DELETE')
-                      <button type="button" class="btn btn-icon btn-sm btn-white text-danger shadow-xs"
-                        title="Eliminar compra"
-                        onclick="confirmarEliminar({{ $compra->idCompras }}, '{{ addslashes($compra->numeroFacturaCompras) }}')">
-                        <i class="bx bx-trash fs-6"></i>
-                      </button>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="9" class="text-center py-5">
-                  <i class="bx bx-folder-open display-4 text-muted mb-2"></i>
-                  <h6>No hay compras registradas</h6>
-                  <p class="text-muted mb-0">Comienza registrando una nueva compra.</p>
-                </td>
-              </tr>
-            @endforelse
-          </tbody>
-        </table>
-      </div>
+  <div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <h5 class="card-title mb-0">Listado de Compras</h5>
+      <span class="badge bg-label-primary">{{ $compras->count() }} registros</span>
     </div>
-  </div>
-
-  {{-- Paginación --}}
-  <div class="d-flex justify-content-center mt-4">
-    {{ $compras->links('pagination::bootstrap-5') }}
+    <div class="card-datatable table-responsive p-3">
+      <table id="tablaCompras" class="table table-bordered table-hover w-100">
+        <thead class="table-light">
+          <tr>
+            <th>Comprobante</th>
+            <th>Proveedor</th>
+            <th>Sucursal</th>
+            <th>Fecha Emisión</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th class="text-center" style="width: 120px;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($compras as $compra)
+            <tr>
+              <td>{{ $compra->numeroFacturaCompras }}</td>
+              <td>{{ $compra->proveedor->nombreProveedores ?? '—' }}</td>
+              <td>{{ $compra->sucursal->nombreSucursales ?? '—' }}</td>
+              <td>{{ \Carbon\Carbon::parse($compra->fechaEmisionCompras)->format('d/m/Y') }}</td>
+              <td class="fw-bold text-success">S/ {{ number_format($compra->totalCompras, 2) }}</td>
+              <td>
+                @php
+                  $badge = match ($compra->estadoCompras) {
+                      'PAGADO' => 'bg-label-success',
+                      'PENDIENTE' => 'bg-label-warning',
+                      'ANULADO' => 'bg-label-danger',
+                      default => 'bg-label-secondary',
+                  };
+                @endphp
+                <span class="badge {{ $badge }}">{{ $compra->estadoCompras }}</span>
+              </td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-1">
+                  {{-- Ver detalle --}}
+                  <a href="{{ route('compras.show', $compra->idCompras) }}" class="btn btn-sm btn-icon btn-info"
+                    title="Ver detalles">
+                    <i class="bx bx-show" style="color: white;"></i>
+                  </a>
+                  {{-- Editar estado --}}
+                  <button type="button" class="btn btn-sm btn-icon btn-warning me-1" title="Cambiar estado"
+                    onclick="abrirModalEditar({{ json_encode($compra) }})">
+                    <i class="bx bx-edit" style="color: white;"></i>
+                  </button>
+                  {{-- Eliminar --}}
+                  <form id="form-delete-{{ $compra->idCompras }}"
+                    action="{{ route('compras.destroy', $compra->idCompras) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-sm btn-icon btn-danger" title="Eliminar compra"
+                      onclick="confirmarEliminar({{ $compra->idCompras }}, '{{ addslashes($compra->numeroFacturaCompras) }}')">
+                      <i class="bx bx-trash" style="color: white;"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
   </div>
 
   @include('compras.modal_create')
@@ -133,6 +106,25 @@
 @section('page-script')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      $('#tablaCompras').DataTable({
+        responsive: true,
+        autoWidth: false,
+        language: {
+          url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+        },
+        columnDefs: [{
+          orderable: false,
+          targets: 6
+        }],
+        order: [
+          [0, 'desc']
+        ],
+        pageLength: 10,
+        lengthMenu: [
+          [5, 10, 25, 50, -1],
+          [5, 10, 25, 50, "Todos"]
+        ],
+      });
       @if ($errors->any())
         @if (old('_method') === 'PUT')
           var modal = new bootstrap.Modal(document.getElementById('modalEditarCompra'));
@@ -143,10 +135,34 @@
         @endif
       @endif
 
-      // Si hay productos seleccionados previamente (ej. tras un error de validación), renderizarlos
+      // Si hay productos seleccionados previamente renderizados
       if (productosSeleccionados.length > 0) {
         renderTablaProductos();
       }
+
+      let script = document.createElement('script');
+      script.src = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js";
+      script.onload = function() {
+        $('#modalCrearCompra').on('shown.bs.modal', function() {
+          $('#proveedoresidCreate, #sucursalesidCreate, #productoSelect').select2({
+            theme: 'bootstrap-5',
+            dropdownParent: $('#modalCrearCompra'),
+            width: '100%',
+            allowClear: true
+          });
+        });
+
+        $('#productoSelect').on('change', function() {
+          const id = $(this).val();
+          if (id) {
+            const prod = productosData.find(p => p.idProductos == id);
+            if (prod && prod.precioProductos) {
+              document.getElementById('precioInput').value = prod.precioProductos;
+            }
+          }
+        });
+      };
+      document.head.appendChild(script);
     });
 
     const productosData = @json($productos);
@@ -199,6 +215,9 @@
 
       renderTablaProductos();
       select.value = '';
+      if (window.jQuery) {
+        $('#productoSelect').val('').trigger('change.select2');
+      }
       document.getElementById('cantidadInput').value = '';
       document.getElementById('precioInput').value = '';
     }
@@ -223,7 +242,7 @@
             <td>${p.cantidad}</td>
             <td>S/ ${p.precio.toFixed(2)}</td>
             <td class="fw-bold">S/ ${p.subtotal.toFixed(2)}</td>
-            <td><button type="button" class="btn btn-sm btn-danger btn-icon" onclick="eliminarProducto(${i})"><i class="bx bx-trash"></i></button></td>
+            <td><button type="button" class="btn btn-sm btn-danger btn-icon" onclick="eliminarProducto(${i})"><i class="bx bx-trash text-white"></i></button></td>
           </tr>`;
         hidden.innerHTML += `
           <input type="hidden" name="productos[${i}][id]"       value="${p.id}">
@@ -234,7 +253,7 @@
       document.getElementById('totalCalculado').textContent = 'S/ ' + total.toFixed(2);
     }
 
-    // ─── Modal Editar Estado ────────────────────────────────────────
+    // Modal Editar Estado
     function abrirModalEditar(compra) {
       document.getElementById('editEstado').value = compra.estadoCompras;
       document.getElementById('editNumFactura').textContent = compra.numeroFacturaCompras;
@@ -246,7 +265,7 @@
       modal.show();
     }
 
-    // ─── Confirmar eliminar ─────────────────────────────────────────
+    // Confirmar eliminar 
     function confirmarEliminar(id, factura) {
       Swal.fire({
         title: '¿Eliminar compra?',

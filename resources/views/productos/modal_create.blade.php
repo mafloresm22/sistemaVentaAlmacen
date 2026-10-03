@@ -13,7 +13,7 @@
       <!-- Modal Body -->
       <div class="modal-body">
 
-        <!-- Fila 1: Código y Nombre del Producto -->
+        <!-- Código y Nombre del Producto -->
         <div class="row g-3 mb-3">
           <div class="col-md-4">
             <label for="codigoProductoCreate" class="form-label fw-medium">
@@ -45,7 +45,7 @@
             @enderror
           </div>
         </div>
-        <!-- Fila 2: Precio -->
+        <!-- Precio -->
         <div class="row g-3 mb-3">
           <div class="col-md-4">
             <label for="precioProductosCreate" class="form-label fw-medium">
@@ -76,7 +76,7 @@
           </div>
         </div>
 
-        <!-- Fila 3: Categoría, Marca, Unidad de Medida -->
+        <!-- Categoría, Marca, Unidad de Medida -->
         <div class="row g-3 mb-3">
           <div class="col-md-4">
             <label for="categoriasidCreate" class="form-label fw-medium">
@@ -138,7 +138,7 @@
           </div>
         </div>
 
-        <!-- Fila 4: Descripción -->
+        <!-- Descripción -->
         <div class="mb-3">
           <label for="descripcionProductosCreate" class="form-label fw-medium">Descripción</label>
           <textarea id="descripcionProductosCreate" name="descripcionProductos" rows="3"

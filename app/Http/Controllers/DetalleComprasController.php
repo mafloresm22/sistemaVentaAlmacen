@@ -9,11 +9,11 @@ class DetalleComprasController extends Controller
 {
     public function index()
     {
-        $detalles = DetalleCompras::with(['compra', 'producto'])
+        $detalles = DetalleCompras::with(['compra.proveedor', 'compra.sucursal', 'producto'])
             ->orderBy('idDetalleCompras', 'desc')
-            ->paginate(20);
+            ->get();
 
-        return view('detalle_compras.index', compact('detalles'));
+        return view('compras.index_detalleCompra', compact('detalles'));
     }
 
     public function show($idDetalleCompras)
