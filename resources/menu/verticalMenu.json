@@ -1,9 +1,6 @@
 {
   "menu": [
     {
-      "menuHeader": "Principal"
-    },
-    {
       "url": "/",
       "name": "Inicio",
       "icon": "menu-icon icon-base bx bx-home-circle",

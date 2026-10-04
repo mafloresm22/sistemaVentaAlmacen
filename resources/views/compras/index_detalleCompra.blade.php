@@ -48,7 +48,7 @@
               </span>
             </div>
             <div>
-              <small class="text-muted d-block fw-semibold">Ítems Comprados</small>
+              <small class="text-muted d-block fw-semibold">Productos Comprados</small>
               <h5 class="mb-0 fw-bold">{{ $compra->detalles->count() }} productos</h5>
             </div>
           </div>
@@ -66,7 +66,7 @@
             </div>
             <div>
               <small class="text-muted d-block fw-semibold">Total Unidades</small>
-              <h5 class="mb-0 fw-bold">{{ number_format($compra->detalles->sum('cantidadDetalleCompras'), 2) }}</h5>
+              <h5 class="mb-0 fw-bold">{{ number_format($compra->detalles->sum('cantidadDetalleCompras')) }} Unidades</h5>
             </div>
           </div>
         </div>
@@ -153,11 +153,11 @@
           <table id="tablaDetalleProductos" class="table table-bordered table-hover w-100">
             <thead class="table-light">
               <tr>
-                <th style="width: 40px;">#</th>
+                <th style="width: 20px;">#</th>
                 <th>Producto</th>
                 <th class="text-center">Cantidad</th>
-                <th class="text-center">Precio Unitario</th>
-                <th class="text-end">Subtotal</th>
+                <th class="text-center">Precio Unitario (S/.)</th>
+                <th class="text-end">Subtotal (S/.)</th>
               </tr>
             </thead>
             <tbody>
@@ -180,9 +180,9 @@
                       {{ number_format($detalle->cantidadDetalleCompras) }}
                     </span>
                   </td>
-                  <td class="text-end">S/ {{ number_format($detalle->precioUnitarioDetalleCompras, 2) }}</td>
+                  <td class="text-end">{{ number_format($detalle->precioUnitarioDetalleCompras, 2) }}</td>
                   <td class="text-end fw-bold text-success fs-8">
-                    S/ {{ number_format($detalle->subtotalDetalleCompras, 2) }}
+                    {{ number_format($detalle->subtotalDetalleCompras, 2) }}
                   </td>
                 </tr>
               @empty
@@ -197,7 +197,7 @@
             <tfoot class="table-light">
               <tr>
                 <td colspan="4" class="text-end fw-semibold text-uppercase small text-muted">Total Compra:</td>
-                <td class="text-end fw-bold text-success">S/ {{ number_format($compra->totalCompras, 2) }}</td>
+                <td class="text-end fw-bold text-success">S/.{{ number_format($compra->totalCompras, 2) }}</td>
               </tr>
             </tfoot>
           </table>

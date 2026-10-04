@@ -3,7 +3,7 @@
 return [
   "creatorName" => "ThemeSelection",
   "creatorUrl" => "https://themeselection.com",
-  "templateName" => "Sistema de Venta y Almacen",
+  "templateName" => "ElectroCore",
   "templateVersion" => "1.0.0",
   "templateFree" => true,
   "templateDescription" => "Most Powerful & Comprehensive Bootstrap 5 + Laravel HTML Admin Dashboard Template built for developers!",

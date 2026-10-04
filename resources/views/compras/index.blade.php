@@ -69,26 +69,24 @@
               </td>
               <td class="text-center">
                 <div class="d-flex justify-content-center gap-1">
+
                   {{-- Ver detalle --}}
                   <a href="{{ route('compras.show', $compra->idCompras) }}" class="btn btn-sm btn-icon btn-info"
                     title="Ver detalles">
                     <i class="bx bx-show" style="color: white;"></i>
                   </a>
-                  {{-- Editar estado --}}
-                  <button type="button" class="btn btn-sm btn-icon btn-warning me-1" title="Cambiar estado"
+
+                  {{-- Editar Estado Pagar --}}
+                  <button type="button" class="btn btn-sm btn-icon btn-success" title="Pagar Compra"
                     onclick="abrirModalEditar({{ json_encode($compra) }})">
                     <i class="bx bx-edit" style="color: white;"></i>
                   </button>
-                  {{-- Eliminar --}}
-                  <form id="form-delete-{{ $compra->idCompras }}"
-                    action="{{ route('compras.destroy', $compra->idCompras) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" class="btn btn-sm btn-icon btn-danger" title="Eliminar compra"
-                      onclick="confirmarEliminar({{ $compra->idCompras }}, '{{ addslashes($compra->numeroFacturaCompras) }}')">
-                      <i class="bx bx-trash" style="color: white;"></i>
-                    </button>
-                  </form>
+
+                  {{-- Editar Estado Anular --}}
+                  <button type="button" class="btn btn-sm btn-icon btn-danger" title="Anular Compra"
+                    onclick="abrirModalAnular({{ json_encode($compra) }})">
+                    <i class="bx bx-stop-circle" style="color: white;"></i>
+                  </button>
                 </div>
               </td>
             </tr>

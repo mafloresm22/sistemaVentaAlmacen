@@ -53,10 +53,7 @@ CREATE TABLE IF NOT EXISTS "Clientes" (
 	"nombreClientes" varchar(120) NOT NULL,
 	"apellidosClientes" varchar(125) NOT NULL,
 	"tipodocumentoClientes" varchar(80) NOT NULL,
-	"numerodocumentoClientes" varchar(20) NOT NULL UNIQUE,
-	"correoClientes" varchar(255),
-	"celularClientes" varchar(255) NOT NULL UNIQUE,
-	"usersid" integer NULL,
+	"numerodocumentoClientes" varchar(20) NOT NULL UNIQUE
 	PRIMARY KEY ("idClientes")
 );
 CREATE TABLE IF NOT EXISTS "Ventas" (
