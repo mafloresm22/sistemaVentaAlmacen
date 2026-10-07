@@ -7,6 +7,7 @@ use App\Models\DetalleCompras;
 use App\Models\Proveedores;
 use App\Models\Sucursales;
 use App\Models\Productos;
+use App\Models\StockAlmacen;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -71,6 +72,35 @@ class ComprasController extends Controller
                     'comprasid'                     => $compra->idCompras,
                     'productosid'                   => $item['id'],
                 ]);
+
+                // Actualizar o crear stock en el almacén solo si el estado es PAGADO
+                if (($request->estadoCompras ?? 'PENDIENTE') === 'PAGADO') {
+                    $stock = StockAlmacen::where('productoid', $item['id'])
+                        ->where('sucursalid', $request->sucursalesid)
+                        ->first();
+
+                    if ($stock) {
+                        $stock->stockactualAlmacen += $item['cantidad'];
+                        
+                        // Actualizar estado del stock
+                        if ($stock->stockactualAlmacen <= 0) {
+                            $stock->estadoStockAlmacen = 'Sin stock';
+                        } elseif ($stock->stockactualAlmacen <= $stock->stockminimoAlmacen) {
+                            $stock->estadoStockAlmacen = 'Bajo stock';
+                        } else {
+                            $stock->estadoStockAlmacen = 'En stock';
+                        }
+                        $stock->save();
+                    } else {
+                        StockAlmacen::create([
+                            'stockactualAlmacen' => $item['cantidad'],
+                            'stockminimoAlmacen' => 0,
+                            'estadoStockAlmacen' => 'En stock',
+                            'productoid'         => $item['id'],
+                            'sucursalid'         => $request->sucursalesid,
+                        ]);
+                    }
+                }
             }
 
             DB::commit();
@@ -95,10 +125,70 @@ class ComprasController extends Controller
             'estadoCompras' => 'required|in:PAGADO,PENDIENTE,ANULADO',
         ]);
 
-        $compra = Compras::findOrFail($idCompras);
+        $compra = Compras::with('detalles')->findOrFail($idCompras);
+        $oldState = $compra->estadoCompras;
+        $newState = $request->estadoCompras;
+        
         $compra->update([
-            'estadoCompras' => $request->estadoCompras,
+            'estadoCompras' => $newState,
         ]);
+
+        // Si cambia a PAGADO y no estaba pagado antes, sumamos stock
+        if ($newState === 'PAGADO' && $oldState !== 'PAGADO') {
+            foreach ($compra->detalles as $detalle) {
+                $stock = StockAlmacen::where('productoid', $detalle->productosid)
+                    ->where('sucursalid', $compra->sucursalesid)
+                    ->first();
+
+                if ($stock) {
+                    $stock->stockactualAlmacen += $detalle->cantidadDetalleCompras;
+                } else {
+                    $stock = StockAlmacen::create([
+                        'stockactualAlmacen' => $detalle->cantidadDetalleCompras,
+                        'stockminimoAlmacen' => 0,
+                        'estadoStockAlmacen' => 'En stock',
+                        'productoid'         => $detalle->productosid,
+                        'sucursalid'         => $compra->sucursalesid,
+                    ]);
+                }
+                
+                // Actualizar estado del stock
+                if ($stock->stockactualAlmacen <= 0) {
+                    $stock->estadoStockAlmacen = 'Sin stock';
+                } elseif ($stock->stockactualAlmacen <= $stock->stockminimoAlmacen) {
+                    $stock->estadoStockAlmacen = 'Bajo stock';
+                } else {
+                    $stock->estadoStockAlmacen = 'En stock';
+                }
+                $stock->save();
+            }
+        }
+        
+        // Si cambia a ANULADO y estaba PAGADO (es decir, ya se había sumado el stock), restamos stock
+        if ($newState === 'ANULADO' && $oldState === 'PAGADO') {
+            foreach ($compra->detalles as $detalle) {
+                $stock = \App\Models\StockAlmacen::where('productoid', $detalle->productosid)
+                    ->where('sucursalid', $compra->sucursalesid)
+                    ->first();
+
+                if ($stock) {
+                    $stock->stockactualAlmacen -= $detalle->cantidadDetalleCompras;
+                    if ($stock->stockactualAlmacen < 0) {
+                        $stock->stockactualAlmacen = 0;
+                    }
+                    
+                    // Actualizar estado del stock
+                    if ($stock->stockactualAlmacen <= 0) {
+                        $stock->estadoStockAlmacen = 'Sin stock';
+                    } elseif ($stock->stockactualAlmacen <= $stock->stockminimoAlmacen) {
+                        $stock->estadoStockAlmacen = 'Bajo stock';
+                    } else {
+                        $stock->estadoStockAlmacen = 'En stock';
+                    }
+                    $stock->save();
+                }
+            }
+        }
 
         return redirect()->route('compras.index')->with('success', 'Estado de la compra actualizado correctamente.');
     }

@@ -78,13 +78,15 @@
 
                   {{-- Editar Estado Pagar --}}
                   <button type="button" class="btn btn-sm btn-icon btn-success" title="Pagar Compra"
-                    onclick="abrirModalEditar({{ json_encode($compra) }})">
-                    <i class="bx bx-edit" style="color: white;"></i>
+                    onclick="confirmarPagar({{ $compra->idCompras }}, '{{ addslashes($compra->numeroFacturaCompras) }}')"
+                    {{ $compra->estadoCompras === 'PAGADO' ? 'disabled' : '' }}>
+                    <i class="bx bx-check-double" style="color: white;"></i>
                   </button>
 
                   {{-- Editar Estado Anular --}}
                   <button type="button" class="btn btn-sm btn-icon btn-danger" title="Anular Compra"
-                    onclick="abrirModalAnular({{ json_encode($compra) }})">
+                    onclick="confirmarAnularCompra({{ $compra->idCompras }}, '{{ addslashes($compra->numeroFacturaCompras) }}')"
+                    {{ $compra->estadoCompras === 'ANULADO' ? 'disabled' : '' }}>
                     <i class="bx bx-stop-circle" style="color: white;"></i>
                   </button>
                 </div>
@@ -251,37 +253,66 @@
       document.getElementById('totalCalculado').textContent = 'S/ ' + total.toFixed(2);
     }
 
-    // Modal Editar Estado
-    function abrirModalEditar(compra) {
-      document.getElementById('editEstado').value = compra.estadoCompras;
-      document.getElementById('editNumFactura').textContent = compra.numeroFacturaCompras;
-      document.getElementById('formEditarCompra').action = '/compras/' + compra.idCompras;
-
-      var modalEl = document.getElementById('modalEditarCompra');
-      var modal = bootstrap.Modal.getInstance(modalEl);
-      if (!modal) modal = new bootstrap.Modal(modalEl);
-      modal.show();
-    }
-
-    // Confirmar eliminar 
-    function confirmarEliminar(id, factura) {
+    // Confirmar Pagar
+    function confirmarPagar(id, factura) {
       Swal.fire({
-        title: '¿Eliminar compra?',
-        html: 'La compra <strong>' + factura + '</strong> y sus detalles serán eliminados permanentemente.',
-        icon: 'warning',
+        title: '¿Pagar compra?',
+        html: 'La compra <strong>' + factura + '</strong> será marcada como PAGADA.',
+        icon: 'info',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
+        confirmButtonColor: '#28a745',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: 'Sí, pagar',
         cancelButtonText: 'Cancelar',
         customClass: {
-          confirmButton: 'btn btn-danger me-3',
-          cancelButton: 'btn btn-label-secondary'
+          confirmButton: 'btn btn-success me-3',
+          cancelButton: 'btn btn-secondary'
         },
         buttonsStyling: false
       }).then((result) => {
         if (result.isConfirmed) {
-          document.getElementById('form-delete-' + id).submit();
+          let form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '/compras/' + id;
+          form.innerHTML = `
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="estadoCompras" value="PAGADO">
+          `;
+          document.body.appendChild(form);
+          form.submit();
+        }
+      });
+    }
+
+    // Confirmar Anular
+    function confirmarAnularCompra(id, factura) {
+      Swal.fire({
+        title: '¿Anular compra?',
+        html: 'La compra <strong>' + factura + '</strong> será marcada como ANULADA.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, anular',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          confirmButton: 'btn btn-danger me-3',
+          cancelButton: 'btn btn-secondary'
+        },
+        buttonsStyling: false
+      }).then((result) => {
+        if (result.isConfirmed) {
+          let form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '/compras/' + id;
+          form.innerHTML = `
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="estadoCompras" value="ANULADO">
+          `;
+          document.body.appendChild(form);
+          form.submit();
         }
       });
     }

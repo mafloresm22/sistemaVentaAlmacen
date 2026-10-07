@@ -78,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
 
   // Módulo de Stock Almacén
   Route::get('/stock-almacen', [StockAlmacenController::class, 'index'])->name('stock-almacen.index');
+  Route::post('/stock-almacen/minimos', [StockAlmacenController::class, 'updateMinimos'])->name('stock-almacen.update-minimos');
   Route::post('/stock-almacen', [StockAlmacenController::class, 'store'])->name('stock-almacen.store');
   Route::get('/stock-almacen/{idStockAlmacen}', [StockAlmacenController::class, 'show'])->name('stock-almacen.show');
   Route::put('/stock-almacen/{idStockAlmacen}', [StockAlmacenController::class, 'update'])->name('stock-almacen.update');

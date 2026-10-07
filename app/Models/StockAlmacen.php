@@ -21,4 +21,9 @@ class StockAlmacen extends Model
     {
         return $this->belongsTo(Productos::class, 'productoid', 'idProductos');
     }
+
+    public function sucursal()
+    {
+        return $this->belongsTo(Sucursales::class, 'sucursalid', 'idSucursales');
+    }
 }
